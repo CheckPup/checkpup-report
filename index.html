@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Oscar's Health Report â CheckPup</title>
+<title>Oscar's Health Report — CheckPup</title>
 <style>
 /* ================================================================
-   CHECKPUP V10.1 â Premium Health Report (Fully Self-Contained)
+   CHECKPUP V10.1 — Premium Health Report (Fully Self-Contained)
    Zero external dependencies. Redesigned entry screen.
    ================================================================ */
 @font-face {
@@ -35,7 +35,7 @@
 html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;-webkit-font-smoothing:antialiased;max-width:420px;margin:0 auto}
 
-/* Header â dark green, matches screenshot exactly */
+/* Header — dark green, matches screenshot exactly */
 .hdr{padding:18px 20px 14px;background:#1B4332;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
 .logo-txt{display:flex;align-items:center}
 .logo-img{height:28px;object-fit:contain;filter:brightness(0) invert(1)}
@@ -43,7 +43,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .hdr-btn{font-size:13px;font-weight:600;padding:10px 22px;border-radius:100px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:all .2s;font-family:inherit;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .hdr-btn:active{transform:scale(.95);background:rgba(255,255,255,.15)}
 
-/* ======== HERO V10.4 â Green gradient ======== */
+/* ======== HERO V10.4 — Green gradient ======== */
 
 /* Dark green gradient banner (flows from header) */
 .hero-banner{background:linear-gradient(175deg,#1B4332 0%,#2D6A4F 50%,#40916C 100%);padding:8px 20px 20px;position:relative;overflow:hidden}
@@ -202,7 +202,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .fc-dlist li{font-size:12.5px;color:var(--t2);padding:3px 0 3px 14px;position:relative;line-height:1.5}
 .fc-dlist li::before{content:'\2022';position:absolute;left:0;color:var(--t3)}
 
-/* Good news â green banner header */
+/* Good news — green banner header */
 .gn{background:var(--sf);border-radius:var(--r);margin-bottom:12px;border:1px solid #C8E6C9;overflow:hidden;box-shadow:var(--s1)}
 .gn-banner{background:linear-gradient(135deg,#2E7D32 0%,#43A047 100%);padding:16px 18px;color:#fff}
 .gn-banner-title{font-size:16px;font-weight:800;letter-spacing:-.2px}
@@ -214,7 +214,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .gn-name{font-size:13.5px;font-weight:600}
 .gn-desc{font-size:12px;color:var(--t2);line-height:1.45;margin-top:1px}
 
-/* Body systems â expandable tiles */
+/* Body systems — expandable tiles */
 .sys-hdr{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px}
 .sys-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
 .sys-tile{background:var(--sf);border-radius:var(--rm);border:1px solid var(--bdr-l);overflow:hidden;transition:box-shadow .2s}
@@ -264,7 +264,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .tox-row-wrap.open .tox-row-more .tox-more-chev{transform:rotate(180deg)}
 .tox-more-chev{transition:transform .25s;font-size:9px}
 
-/* Body system â More Details link */
+/* Body system — More Details link */
 .sys-more{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--brand);margin-top:10px;cursor:pointer;padding:4px 0;transition:opacity .15s}
 .sys-more:active{opacity:.6}
 .sys-more-chev{font-size:10px;transition:transform .25s}
@@ -362,7 +362,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 <body>
 <script>
 // ================================================================
-// CHECKPUP V10.1 â Redesigned Hero (Fully Self-Contained)
+// CHECKPUP V10.1 — Redesigned Hero (Fully Self-Contained)
 // ================================================================
 
 // SVG ICON LIBRARY (Apple SF Symbols style, 1.5px stroke)
@@ -546,8 +546,7 @@ var checkedItems = {};
 // RENDER
 function render() {
   document.body.innerHTML = buildHeader() + buildHero() +
-    '<div class="sec">' + buildSecHdr("What we found") + buildFindings() + buildGoodNews() + '</div>' +
-    '<div id="health-scores" class="sec">' + buildSecHdr("Health Scores") + buildHealthScores() + '</div>' +
+    '<div class="sec" id="what-we-found">' + buildSecHdr("What we found") + buildFindings() + buildGoodNews() + '</div>' +
     '<div class="sec" id="systems-section">' + buildSecHdr("Body Systems") + buildSystems() + '</div>' +
     '<div class="sec" id="toxin-section">' + buildSecHdr("Toxic Metals") + buildToxin() + '</div>' +
     '<div class="sec">' + buildSecHdr("Oscar\u2019s Plan") + buildPlan() + buildBundle() + '</div>' +
@@ -663,7 +662,7 @@ function buildHero() {
 
   var gridBoxes = '<div class="hero-grid">' +
     // Wellness Check - with mini ring
-    '<div class="hero-grid-box" data-scroll="health-scores">' +
+    '<div class="hero-grid-box" data-scroll="what-we-found">' +
       '<div class="hero-grid-ring">' +
         '<svg viewBox="0 0 40 40"><circle class="hero-grid-ring-bg" cx="20" cy="20" r="' + ringR + '"/>' +
         '<circle class="hero-grid-ring-fill" cx="20" cy="20" r="' + ringR + '" stroke="var(--ok)" stroke-dasharray="' + ringC.toFixed(1) + '" stroke-dashoffset="' + ringOff.toFixed(1) + '"/></svg>' +
@@ -723,9 +722,14 @@ function buildFindings() {
     if (r.reported) {
       innerHtml += '<div class="fc-reported"><strong>What you told us: </strong>' + r.reported.join(", ") + '</div>';
     }
-    innerHtml += '<div class="lab-wrap"><div class="lab-hdr"><span class="lab-ideal">Ideal: ' + r.mean + '</span><span class="lab-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
-      '<div class="lab-track"><div class="lab-zone"></div><div class="lab-dot" style="left:' + pos + '%;background:' + s.c + '"></div></div>' +
-      '<div class="lab-labels"><span>Low</span><span>Optimal</span><span>High</span></div></div>';
+    innerHtml += '<div style="margin-bottom:16px">' +
+      '<div class="hs-gradient">' +
+        '<div class="hs-gradient-bar"></div>' +
+        '<div class="hs-gradient-dot" style="left:' + pos + '%"></div>' +
+      '</div>' +
+      '<div class="hs-gradient-labels"><span>Optimal</span><span>Watch</span><span>Concern</span><span>Priority</span></div>' +
+      '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+    '</div>';
     if (r.systems) {
       innerHtml += '<div class="fc-tags">' + r.systems.map(function(sys) {
         return '<span class="fc-tag" style="background:' + s.bg + ';color:' + s.c + '">' + sys + '</span>';
@@ -767,100 +771,42 @@ function buildFindings() {
 
 function buildGoodNews() {
   if (THR.length === 0) return '';
-  var items = THR.map(function(k) {
-    var r = RATIOS[k], s = getSev(k);
-    return '<div class="gn-item">' +
-      '<div class="gn-dot">\u2713</div>' +
-      '<div>' +
-        '<div class="gn-name">' + r.label + '</div>' +
-        '<div class="gn-desc">Within optimal range at ' + r.val + ' (ideal: ' + r.mean + ')</div>' +
+  var cards = THR.map(function(k) {
+    var r = RATIOS[k], s = getSev(k), pos = getPos(k);
+    var innerHtml = '<div style="margin-bottom:16px">' +
+      '<div class="hs-gradient">' +
+        '<div class="hs-gradient-bar"></div>' +
+        '<div class="hs-gradient-dot" style="left:' + pos + '%"></div>' +
       '</div>' +
+      '<div class="hs-gradient-labels"><span>Optimal</span><span>Watch</span><span>Concern</span><span>Priority</span></div>' +
+      '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+    '</div>';
+    if (r.desc) {
+      innerHtml += '<div style="font-size:13px;color:var(--t2);line-height:1.65">' + r.desc + '</div>';
+    }
+    return '<div class="fc" data-toggle="fc">' +
+      '<div class="fc-accent" style="background:var(--ok)"></div>' +
+      '<div class="fc-compact">' +
+        '<div class="fc-num" style="background:var(--ok-l);color:var(--ok)">\u2713</div>' +
+        '<div class="fc-body">' +
+          '<div class="fc-title">' + r.label + '</div>' +
+          '<div class="fc-sub" style="color:var(--ok)">Thriving \u00b7 Within optimal range</div>' +
+        '</div>' +
+        '<div class="fc-chev">' + SVG_ICONS.chevronDown + '</div>' +
+      '</div>' +
+      '<div class="fc-expand"><div class="fc-inner">' + innerHtml + '</div></div>' +
     '</div>';
   }).join('');
 
-  return '<div class="gn" id="good-news">' +
-    '<div class="gn-banner">' +
+  return '<div id="good-news" style="margin-top:16px">' +
+    '<div class="gn-banner" style="border-radius:var(--rm);margin-bottom:12px">' +
       '<div class="gn-banner-title">All ' + THR.length + ' Looking Good</div>' +
       '<div class="gn-banner-sub">These ratios are thriving</div>' +
     '</div>' +
-    '<div class="gn-list">' + items + '</div>' +
+    cards +
   '</div>';
 }
 
-function buildHealthScores() {
-  var cards = KEYS.map(function(k) {
-    var r = RATIOS[k], s = getSev(k), pos = getPos(k);
-    var deviation = r.val / r.mean;
-    var sevLabel, sevColor;
-    if (s.lv === 'grn') { sevLabel = 'Thriving \u00b7 Within optimal range'; sevColor = 'var(--ok)'; }
-    else if (s.lv === 'ylw') { sevLabel = 'Watch \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--caut)'; }
-    else if (s.lv === 'org') { sevLabel = 'Concern \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--warn)'; }
-    else { sevLabel = 'Priority \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--crit)'; }
-
-    // Expandable inner content: full detail for flagged ratios, short for healthy
-    var innerHtml = '';
-    var isFlagged = PRI.indexOf(k) !== -1;
-
-    if (isFlagged) {
-      // Full detail for flagged ratios
-      if (r.plain) {
-        innerHtml += '<div style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:12px">' + r.plain + '</div>';
-      }
-      if (r.reported) {
-        innerHtml += '<div class="fc-reported"><strong>What you told us: </strong>' + r.reported.join(", ") + '</div>';
-      }
-      innerHtml += '<div class="lab-wrap"><div class="lab-hdr"><span class="lab-ideal">Ideal: ' + r.mean + '</span><span class="lab-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
-        '<div class="lab-track"><div class="lab-zone"></div><div class="lab-dot" style="left:' + pos + '%;background:' + s.c + '"></div></div>' +
-        '<div class="lab-labels"><span>Low</span><span>Optimal</span><span>High</span></div></div>';
-      if (r.systems) {
-        innerHtml += '<div class="fc-tags">' + r.systems.map(function(sys) {
-          return '<span class="fc-tag" style="background:' + s.bg + ';color:' + s.c + '">' + sys + '</span>';
-        }).join('') + '</div>';
-      }
-      if (r.actions) {
-        innerHtml += '<div class="fc-wtd"><div class="fc-wtd-hdr">What to do</div><ul>' +
-          r.actions.map(function(a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>';
-      }
-      if (r.signs || r.factors) {
-        innerHtml += '<div class="fc-deep">';
-        if (r.signs) {
-          innerHtml += '<div class="fc-dl">Signs to watch</div><ul class="fc-dlist">' +
-            r.signs.map(function(si) { return '<li>' + si + '</li>'; }).join('') + '</ul>';
-        }
-        if (r.factors) {
-          innerHtml += '<div class="fc-dl">Contributing factors</div><ul class="fc-dlist">' +
-            r.factors.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul>';
-        }
-        innerHtml += '</div>';
-      }
-    } else {
-      // Short content for healthy ratios
-      if (r.desc) {
-        innerHtml += '<div style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:12px">' + r.desc + '</div>';
-      }
-    }
-
-    return '<div class="hs" data-toggle="hs">' +
-      '<div class="hs-compact">' +
-        '<div class="hs-top">' +
-          '<div class="hs-dot" style="background:' + s.c + '"></div>' +
-          '<div class="hs-name">' + r.label + '</div>' +
-          '<div class="hs-chev">\u25BE</div>' +
-        '</div>' +
-        '<div class="hs-sev" style="color:' + sevColor + ';padding-left:18px">' + sevLabel + '</div>' +
-        '<div class="hs-gradient">' +
-          '<div class="hs-gradient-bar"></div>' +
-          '<div class="hs-gradient-dot" style="left:' + pos + '%"></div>' +
-        '</div>' +
-        '<div class="hs-gradient-labels"><span>Optimal</span><span>Watch</span><span>Concern</span><span>Priority</span></div>' +
-        '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
-      '</div>' +
-      '<div class="hs-expand"><div class="hs-inner">' + innerHtml + '</div></div>' +
-    '</div>';
-  }).join('');
-
-  return cards;
-}
 
 
 function buildSystems() {
@@ -1142,4 +1088,3 @@ render();
 </script>
 </body>
 </html>
-
