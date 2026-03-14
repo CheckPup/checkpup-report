@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Oscar's Health Report â CheckPup</title>
+<style>
+/* ================================================================
+   CHECKPUP V10.1 â Premium Health Report (Fully Self-Contained)
+   Zero external dependencies. Redesigned entry screen.
+   ================================================================ */
+@font-face {
+  font-family: 'SF';
+  src: local('SF Pro Display'), local('SF Pro Text'), local('.AppleSystemUIFont'),
+       local('Segoe UI'), local('Helvetica Neue'), local('Helvetica'), local('Arial');
+  font-display: swap;
+}
+:root{
+  --bg:#F7F6F3;--sf:#FFFFFF;
+  --bdr:#E5E0D8;--bdr-l:#EFEAE2;
+  --t1:#1A1A17;--t2:#5C5C57;--t3:#9C9C96;
+  --brand:#C2590A;--brand-h:#A84A08;--brand-l:#FFF5ED;
+  --crit:#C62828;--crit-l:#FFEBEE;--crit-bg:#FFF5F5;
+  --warn:#D84315;--warn-l:#FFF3E0;
+  --caut:#F9A825;--caut-l:#FFFDE7;
+  --ok:#2E7D32;--ok-l:#E8F5E9;--ok-bg:#F1F8F2;
+  --act:#00695C;--act-d:#004D40;--act-l:#E0F2F1;
+  --s1:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --s2:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.04);
+  --s3:0 8px 24px rgba(0,0,0,.1),0 2px 8px rgba(0,0,0,.06);
+  --r:16px;--rm:12px;--rs:8px;
+  --fs-xs:10px;--fs-sm:11px;--fs-base:14px;--fs-md:16px;--fs-lg:18px;--fs-xl:20px;--fs-2xl:22px;--fs-3xl:28px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;-webkit-font-smoothing:antialiased;max-width:420px;margin:0 auto}
+
+/* Header â dark green, matches screenshot exactly */
+.hdr{padding:18px 20px 14px;background:#1B4332;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.logo-txt{display:flex;align-items:center}
+.logo-img{height:28px;object-fit:contain;filter:brightness(0) invert(1)}
+.hdr-btns{display:flex;gap:8px}
+.hdr-btn{font-size:13px;font-weight:600;padding:10px 22px;border-radius:100px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:all .2s;font-family:inherit;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.hdr-btn:active{transform:scale(.95);background:rgba(255,255,255,.15)}
+
+/* ======== HERO V10.4 â Green gradient ======== */
+
+/* Dark green gradient banner (flows from header) */
+.hero-banner{background:linear-gradient(175deg,#1B4332 0%,#2D6A4F 50%,#40916C 100%);padding:8px 20px 20px;position:relative;overflow:hidden}
+.hero-banner::after{content:'';position:absolute;top:-30%;right:-15%;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%)}
+.hero-avatar{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hero-avatar svg{width:40px;height:40px}
+.hero-id{display:flex;align-items:center;gap:16px;position:relative;z-index:1;margin-bottom:16px}
+.hero-info{flex:1;min-width:0}
+.hero-name{font-size:var(--fs-3xl);font-weight:800;letter-spacing:-.5px;line-height:1.2;color:#fff}
+.hero-meta{font-size:13px;color:rgba(255,255,255,.6);margin-top:4px;font-weight:500}
+.hero-vet{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:rgba(255,255,255,.8);background:rgba(255,255,255,.12);padding:7px 16px;border-radius:100px;border:1px solid rgba(255,255,255,.15);position:relative;z-index:1}
+
+/* Summary card (white, overlaps green banner) */
+.hero-card{background:rgba(255,255,255,.12);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:var(--r);margin:12px 16px 0;padding:22px 24px;position:relative;z-index:2;border:1px solid rgba(255,255,255,.18)}
+.hero-card-top{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.hero-card-content{flex:1;min-width:0}
+.hero-card-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:rgba(255,255,255,.65);margin-bottom:8px}
+.hero-card-title{font-size:var(--fs-2xl);font-weight:800;letter-spacing:-.3px;line-height:1.2;color:#fff}
+.hero-card-desc{font-size:13.5px;color:rgba(255,255,255,.8);line-height:1.6;margin-top:8px}
+.hero-card-desc em{font-style:normal;color:#fff;font-weight:600}
+.hero-card-cta{display:inline-block;padding:10px 22px;border-radius:var(--rm);background:rgba(255,255,255,.95);color:var(--brand);font-size:13.5px;font-weight:700;border:none;cursor:pointer;margin-top:14px;font-family:inherit;transition:transform .15s;letter-spacing:-.1px}
+.hero-card-cta:active{transform:scale(.96)}
+
+/* Score ring in card */
+.hero-ring-wrap{position:relative;width:72px;height:72px;flex-shrink:0}
+.hero-ring-svg{width:72px;height:72px;transform:rotate(-90deg)}
+.hero-ring-bg{fill:none;stroke:var(--bdr-l);stroke-width:5}
+.hero-ring-fill{fill:none;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+.hero-ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero-ring-num{font-size:var(--fs-xl);font-weight:800;line-height:1;letter-spacing:-.5px;color:var(--t1)}
+.hero-ring-of{font-size:8.5px;color:var(--t3);font-weight:700;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+/* Stat strip inside card */
+.hero-strip{display:flex;gap:0;margin-top:16px;padding-top:14px;border-top:1px solid var(--bdr-l)}
+.hero-stat{flex:1;text-align:center;padding:4px 0}
+.hero-stat:not(:last-child){border-right:1px solid var(--bdr-l)}
+.hero-stat-num{font-size:var(--fs-2xl);font-weight:800;line-height:1;margin-bottom:3px}
+.hero-stat-label{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.3px}
+
+/* Body below card */
+.hero-body{padding:16px 20px 20px}
+
+/* Priority cards */
+.hero-priorities{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.hero-pri{display:flex;align-items:center;gap:12px;background:var(--sf);border-radius:var(--rm);padding:14px 14px 14px 0;border:1px solid var(--bdr-l);box-shadow:var(--s1);cursor:pointer;transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden}
+.hero-pri:active{transform:scale(.98);box-shadow:var(--s2)}
+.hero-pri-bar{width:4px;align-self:stretch;border-radius:0 0 0 0;flex-shrink:0;margin-left:-1px;border-radius:12px 0 0 12px}
+.hero-pri-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hero-pri-body{flex:1;min-width:0}
+.hero-pri-label{font-size:14px;font-weight:700;letter-spacing:-.1px}
+.hero-pri-sub{font-size:11.5px;color:var(--t2);margin-top:2px;line-height:1.4}
+.hero-pri-val{font-size:10px;font-weight:700;padding:3px 9px;border-radius:100px;flex-shrink:0;white-space:nowrap}
+.hero-pri-chev{color:var(--t3);font-size:16px;flex-shrink:0;opacity:.3}
+
+/* Healthy bar */
+.hero-healthy{display:flex;align-items:center;gap:10px;background:var(--ok-bg);border-radius:var(--rm);padding:12px 14px;border:1px solid #C8E6C9;cursor:pointer;transition:transform .15s;margin-bottom:4px}
+.hero-healthy:active{transform:scale(.98)}
+.hero-healthy-icon{width:22px;height:22px;border-radius:50%;background:var(--ok);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0}
+.hero-healthy-txt{flex:1;font-size:13px;font-weight:600;color:var(--ok)}
+.hero-healthy-chev{color:var(--ok);font-size:16px;opacity:.4}
+
+/* Summary grid (4 boxes) */
+.hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.hero-grid-box{background:var(--sf);border-radius:var(--rm);padding:16px;border:1px solid var(--bdr-l);cursor:pointer;transition:transform .15s,box-shadow .15s;box-shadow:var(--s1);display:flex;flex-direction:column;min-height:110px}
+.hero-grid-box:active{transform:scale(.98);box-shadow:var(--s2)}
+.hero-grid-icon{width:28px;height:28px;margin-bottom:8px;color:var(--t2)}
+.hero-grid-label{font-size:13.5px;font-weight:700;letter-spacing:-.1px;color:var(--t1);margin-bottom:4px}
+.hero-grid-val{font-size:12px;color:var(--t2);font-weight:500;line-height:1.4}
+.hero-grid-bar{height:5px;border-radius:3px;background:var(--bdr-l);margin-top:8px;overflow:hidden}
+.hero-grid-bar-fill{height:100%;border-radius:3px}
+.hero-grid-link{font-size:11.5px;font-weight:600;color:var(--brand);margin-top:auto;padding-top:8px}
+.hero-grid-pill{display:inline-block;font-size:10.5px;font-weight:600;padding:4px 10px;border-radius:100px;margin-top:8px;background:var(--brand-l);color:var(--brand)}
+.hero-grid-ring{position:relative;width:44px;height:44px;flex-shrink:0;float:right;margin:-4px -2px 0 6px}
+.hero-grid-ring svg{width:44px;height:44px;transform:rotate(-90deg)}
+.hero-grid-ring-bg{fill:none;stroke:var(--bdr-l);stroke-width:4}
+.hero-grid-ring-fill{fill:none;stroke-width:4;stroke-linecap:round}
+.hero-grid-ring-txt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:12px;font-weight:800;line-height:1}
+.hero-grid-ring-of{font-size:7px;color:var(--t3);font-weight:600;text-transform:uppercase}
+
+/* Health Scores section */
+.hs{background:var(--sf);border-radius:var(--r);margin-bottom:12px;border:1px solid var(--bdr-l);box-shadow:var(--s1);overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .15s;position:relative}
+.hs:active{transform:scale(.985)}
+.hs-compact{padding:16px 18px}
+.hs-top{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.hs-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.hs-name{font-size:var(--fs-md);font-weight:700;letter-spacing:-.1px;flex:1}
+.hs-chev{color:var(--t3);font-size:14px;opacity:.3;transition:transform .25s;flex-shrink:0}
+.hs.open .hs-chev{transform:rotate(180deg);opacity:.6}
+.hs-sev{font-size:var(--fs-sm);font-weight:600;margin-bottom:10px}
+.hs-gradient{height:8px;border-radius:4px;position:relative;margin-bottom:6px;overflow:visible}
+.hs-gradient-bar{height:100%;border-radius:4px;background:linear-gradient(to right,var(--ok) 0%,var(--ok) 25%,var(--caut) 45%,var(--warn) 65%,var(--crit) 100%)}
+.hs-gradient-dot{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:#1B4332;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transform:translateX(-50%);z-index:1}
+.hs-gradient-labels{display:flex;justify-content:space-between;font-size:var(--fs-xs);color:var(--t3);font-weight:600}
+.hs-vals{display:flex;justify-content:space-between;font-size:var(--fs-sm);font-weight:600;margin-top:8px}
+.hs-val-ideal{color:var(--ok)}
+.hs-val-actual{font-weight:700}
+.hs-expand{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease}
+.hs.open .hs-expand{max-height:1200px;opacity:1}
+.hs-inner{padding:0 18px 18px}
+
+/* Date/kit line */
+.hero-date{font-size:11px;color:var(--t3);text-align:center;padding:10px 20px 6px}
+
+/* ======== Section header ======== */
+.sec{padding:8px 20px 24px}
+.sec-hdr{display:flex;align-items:center;gap:12px;margin:28px 0 18px}
+.sec-hdr::before,.sec-hdr::after{content:'';flex:1;height:1px;background:var(--bdr-l)}
+.sec-lbl{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);white-space:nowrap}
+
+/* Finding card */
+.fc{background:var(--sf);border-radius:var(--r);margin-bottom:12px;border:1px solid var(--bdr-l);box-shadow:var(--s1);overflow:hidden;cursor:pointer;transition:box-shadow .2s,transform .15s;position:relative}
+.fc:active{transform:scale(.985)}
+.fc:hover{box-shadow:var(--s2)}
+.fc-accent{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.fc-compact{display:flex;align-items:center;gap:14px;padding:16px 16px 16px 20px}
+.fc-num{width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fc-body{flex:1;min-width:0}
+.fc-title{font-size:15.5px;font-weight:700;letter-spacing:-.1px}
+.fc-sub{font-size:12.5px;color:var(--t2);margin-top:2px;line-height:1.45}
+.fc-chev{width:30px;height:30px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .25s ease,background .2s,color .2s;color:var(--t3)}
+.fc.open .fc-chev{transform:rotate(180deg);background:var(--brand-l);color:var(--brand)}
+
+/* Expand animation */
+.fc-expand{max-height:0;overflow:hidden;opacity:0;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease}
+.fc.open .fc-expand{max-height:1200px;opacity:1}
+.fc-inner{padding:4px 20px 20px}
+.fc-plain{font-size:13.5px;line-height:1.75;color:var(--t2);margin-bottom:16px}
+.fc-reported{background:var(--brand-l);border-radius:var(--rs);padding:12px 14px;font-size:12.5px;line-height:1.55;color:var(--t2);margin-bottom:16px}
+.fc-reported strong{color:var(--brand);font-weight:700}
+
+/* Lab bar */
+.lab-wrap{margin-bottom:16px}
+.lab-hdr{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:8px}
+.lab-ideal{color:var(--t3);font-weight:600}
+.lab-actual{font-weight:700}
+.lab-track{height:8px;background:var(--bdr-l);border-radius:4px;position:relative;margin-bottom:8px}
+.lab-zone{position:absolute;left:30%;right:30%;top:0;bottom:0;background:rgba(46,125,50,.1);border-radius:4px}
+.lab-dot{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transform:translateX(-50%)}
+.lab-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--t3);font-weight:600}
+
+/* Tags */
+.fc-tags{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0}
+.fc-tag{font-size:10.5px;font-weight:600;padding:3px 10px;border-radius:100px}
+
+/* What to do */
+.fc-wtd{background:var(--bg);border-radius:var(--rs);padding:14px 16px;margin-top:14px}
+.fc-wtd-hdr{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--act);margin-bottom:8px}
+.fc-wtd li{font-size:12.5px;color:var(--t2);padding:4px 0 4px 20px;position:relative;line-height:1.55;list-style:none}
+.fc-wtd li::before{content:'\2713';position:absolute;left:0;color:var(--act);font-weight:700;font-size:11px}
+
+/* Deep detail */
+.fc-deep{border-top:1px solid var(--bdr-l);padding-top:14px;margin-top:14px}
+.fc-dl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t3);margin-bottom:6px;margin-top:12px}
+.fc-dl:first-child{margin-top:0}
+.fc-dlist{list-style:none;padding:0}
+.fc-dlist li{font-size:12.5px;color:var(--t2);padding:3px 0 3px 14px;position:relative;line-height:1.5}
+.fc-dlist li::before{content:'\2022';position:absolute;left:0;color:var(--t3)}
+
+/* Good news â green banner header */
+.gn{background:var(--sf);border-radius:var(--r);margin-bottom:12px;border:1px solid #C8E6C9;overflow:hidden;box-shadow:var(--s1)}
+.gn-banner{background:linear-gradient(135deg,#2E7D32 0%,#43A047 100%);padding:16px 18px;color:#fff}
+.gn-banner-title{font-size:16px;font-weight:800;letter-spacing:-.2px}
+.gn-banner-sub{font-size:12px;opacity:.8;margin-top:2px}
+.gn-list{padding:14px 18px}
+.gn-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdr-l)}
+.gn-item:last-child{border-bottom:none;padding-bottom:0}
+.gn-dot{width:22px;height:22px;border-radius:50%;background:var(--ok-l);color:var(--ok);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
+.gn-name{font-size:13.5px;font-weight:600}
+.gn-desc{font-size:12px;color:var(--t2);line-height:1.45;margin-top:1px}
+
+/* Body systems â expandable tiles */
+.sys-hdr{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px}
+.sys-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.sys-tile{background:var(--sf);border-radius:var(--rm);border:1px solid var(--bdr-l);overflow:hidden;transition:box-shadow .2s}
+.sys-tile:hover{box-shadow:var(--s2)}
+.sys-tile-top{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background .15s}
+.sys-tile-top:active{background:var(--bg)}
+.sys-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;color:currentColor}
+.sys-name{flex:1;font-size:13px;font-weight:600}
+.sys-pill{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:100px;white-space:nowrap}
+.sys-tile-chev{color:var(--t3);font-size:14px;opacity:.3;transition:transform .25s;flex-shrink:0}
+.sys-tile.open .sys-tile-chev{transform:rotate(180deg);opacity:.6}
+.sys-tile-detail{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s ease}
+.sys-tile.open .sys-tile-detail{max-height:800px;opacity:1}
+.sys-tile-inner{padding:0 14px 14px;font-size:12.5px;color:var(--t2);line-height:1.6;border-top:1px solid var(--bdr-l);margin-top:0;padding-top:12px}
+.sys-tile-ratios{font-size:11px;color:var(--t3);margin-top:6px;font-weight:600}
+
+/* Toxin */
+.tox{background:var(--crit-bg);border:1px solid #FFCDD2;border-radius:var(--r);padding:18px;margin-bottom:12px;cursor:pointer;transition:box-shadow .2s,transform .15s;box-shadow:var(--s1)}
+.tox:active{transform:scale(.985)}
+.tox-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.tox-title{font-size:14.5px;font-weight:700;color:var(--crit)}
+.tox-badge{font-size:10px;font-weight:700;background:var(--crit);color:#fff;padding:3px 9px;border-radius:100px}
+.tox-sum{font-size:13px;color:var(--t2);line-height:1.6}
+.tox-hint{font-size:11px;color:var(--t3);margin-top:6px;font-weight:600;transition:opacity .2s}
+.tox-expand{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s ease}
+.tox.open .tox-expand{max-height:3000px;opacity:1}
+.tox.open .tox-hint{opacity:0;max-height:0;margin:0;overflow:hidden}
+.tox-inner{padding-top:14px}
+.tox-row{display:flex;align-items:center;gap:10px;padding:6px 0}
+.tox-lbl{font-size:12px;font-weight:600;color:var(--t2);width:72px;flex-shrink:0}
+.tox-bar{flex:1;height:7px;border-radius:4px;background:#FFCDD2;overflow:hidden}
+.tox-fill{height:100%;border-radius:4px;transition:width .5s ease}
+.tox-val{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px;text-align:center;flex-shrink:0;white-space:nowrap}
+
+/* Toxin row expand (per-element education) */
+.tox-row-wrap{cursor:pointer;transition:background .15s;border-radius:var(--rs);margin:0 -6px;padding:0 6px}
+.tox-row-wrap:active{background:rgba(0,0,0,.03)}
+.tox-row-edu{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s ease}
+.tox-row-wrap.open .tox-row-edu{max-height:300px;opacity:1}
+.tox-edu-inner{padding:8px 0 12px;border-bottom:1px solid var(--bdr-l)}
+.tox-edu-what{font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:8px}
+.tox-edu-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:4px;margin-top:8px}
+.tox-edu-list{list-style:none;padding:0}
+.tox-edu-list li{font-size:12px;color:var(--t2);padding:2px 0 2px 14px;position:relative;line-height:1.5}
+.tox-edu-list li::before{content:'\2022';position:absolute;left:0;color:var(--t3)}
+.tox-row-more{font-size:11px;font-weight:600;color:var(--crit);padding:4px 0;cursor:pointer;display:flex;align-items:center;gap:4px}
+.tox-row-wrap.open .tox-row-more .tox-more-chev{transform:rotate(180deg)}
+.tox-more-chev{transition:transform .25s;font-size:9px}
+
+/* Body system â More Details link */
+.sys-more{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--brand);margin-top:10px;cursor:pointer;padding:4px 0;transition:opacity .15s}
+.sys-more:active{opacity:.6}
+.sys-more-chev{font-size:10px;transition:transform .25s}
+.sys-tile.deep .sys-more-chev{transform:rotate(180deg)}
+.sys-deep{max-height:0;overflow:hidden;opacity:0;transition:max-height .35s cubic-bezier(.4,0,.2,1),opacity .25s ease}
+.sys-tile.deep .sys-deep{max-height:500px;opacity:1}
+.sys-deep-inner{padding-top:10px;border-top:1px solid var(--bdr-l);margin-top:8px}
+.sys-deep-p{font-size:12px;color:var(--t2);line-height:1.6;margin-bottom:8px}
+.sys-deep-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t3);margin-bottom:4px;margin-top:10px}
+.sys-deep-list{list-style:none;padding:0}
+.sys-deep-list li{font-size:12px;color:var(--t2);padding:2px 0 2px 14px;position:relative;line-height:1.5}
+.sys-deep-list li::before{content:'\2022';position:absolute;left:0;color:var(--t3)}
+
+/* Retest / Progress tracking */
+.retest{background:#004D40;border-radius:var(--r);padding:24px 20px;margin:0 0 16px;color:#fff;text-align:center;box-shadow:0 4px 20px rgba(0,77,64,.15);border:1px solid rgba(255,255,255,.1)}
+.retest h3{font-size:var(--fs-lg);font-weight:700;margin-bottom:6px;letter-spacing:-.2px}
+.retest p{font-size:13px;opacity:.8;margin-bottom:18px;line-height:1.55;letter-spacing:-.2px}
+.timeline{display:flex;align-items:center;justify-content:center;margin:18px 0}
+.tl-step{display:flex;flex-direction:column;align-items:center;gap:4px}
+.tl-dot{width:12px;height:12px;border-radius:50%;background:white}
+.tl-dot.future{background:transparent;border:2px solid rgba(255,255,255,.4)}
+.tl-dot.mid{width:auto;height:auto;font-size:16px;background:none;border:none}
+.tl-label{font-size:10px;opacity:.65;white-space:nowrap}
+.tl-line{width:48px;height:2px;background:rgba(255,255,255,.2)}
+.retest-btn{display:inline-block;background:rgba(255,255,255,.15);color:#fff;border:1.5px solid rgba(255,255,255,.3);padding:14px 28px;border-radius:25px;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s;box-shadow:none;font-family:inherit;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.retest-btn:active{transform:scale(.95)}
+
+/* Plan */
+.plan{background:var(--sf);border-radius:var(--r);padding:22px 20px;margin-bottom:16px;border:1px solid var(--bdr-l);box-shadow:var(--s1)}
+.plan-title{font-size:var(--fs-xl);font-weight:800;letter-spacing:-.3px;margin-bottom:4px}
+.plan-desc{font-size:13px;color:var(--t2);margin-bottom:20px;line-height:1.65}
+.phase{margin-bottom:24px;position:relative;padding-left:22px}
+.phase:last-child{margin-bottom:0}
+.phase::before{content:'';position:absolute;left:5px;top:24px;bottom:-24px;width:2px;background:var(--bdr-l);border-radius:1px}
+.phase:last-child::before{display:none}
+.ph-hdr{display:flex;align-items:center;gap:10px;margin-bottom:8px;position:relative}
+.ph-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;position:absolute;left:-22px;top:50%;transform:translateY(-50%);z-index:1;border:2px solid var(--sf)}
+.ph-name{font-size:14.5px;font-weight:700}
+.ph-when{font-size:11.5px;color:var(--t3)}
+.ph-prog{display:flex;align-items:center;gap:8px;margin:4px 0 10px}
+.ph-prog-bar{flex:1;height:4px;background:var(--bdr-l);border-radius:2px;overflow:hidden}
+.ph-prog-fill{height:100%;background:var(--act);border-radius:2px;transition:width .35s ease}
+.ph-prog-pct{font-size:10.5px;color:var(--t3);font-weight:600;width:30px;text-align:right}
+
+/* Check items */
+.ci{display:flex;align-items:flex-start;gap:10px;padding:6px 0;cursor:pointer;-webkit-user-select:none;user-select:none}
+.ci:active{opacity:.7}
+.ci-box{width:20px;height:20px;border-radius:6px;border:2px solid var(--bdr);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;transition:all .2s ease;color:transparent;font-size:11px;font-weight:800}
+.ci-box.on{background:var(--act);border-color:var(--act);color:#fff}
+.ci-txt{font-size:13px;color:var(--t2);line-height:1.55;transition:all .2s}
+.ci-txt.done{text-decoration:line-through;opacity:.4}
+
+/* Inline supplement */
+.supp-card{display:flex;align-items:center;gap:12px;background:var(--act-l);border-radius:var(--rs);padding:12px 14px;margin:6px 0 2px}
+.supp-card-icon{font-size:20px;flex-shrink:0}
+.supp-card-name{font-size:12.5px;font-weight:700;color:var(--act-d)}
+.supp-card-why{font-size:11px;color:var(--t2)}
+.supp-card-price{font-size:12.5px;font-weight:700;color:var(--act-d);flex-shrink:0}
+
+/* Inline diet */
+.diet-card{background:var(--brand-l);border-radius:var(--rs);padding:14px 16px;margin:6px 0 2px}
+.diet-card-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--brand);margin-bottom:6px}
+.diet-card-row{font-size:12px;color:var(--t2);line-height:1.7}
+.diet-card-row strong{font-weight:700;color:var(--t1)}
+
+/* Bundle */
+.bundle{background:#004D40;border-radius:var(--r);padding:24px 22px;margin-bottom:16px;color:#fff;text-align:center;box-shadow:0 4px 20px rgba(0,77,64,.15);border:1px solid rgba(255,255,255,.1)}
+.bundle h3{font-size:var(--fs-lg);font-weight:800;margin-bottom:6px;letter-spacing:-.2px}
+.bundle-sub{font-size:13px;opacity:.85;margin-bottom:16px;line-height:1.55;letter-spacing:-.2px}
+.bundle-row{display:flex;justify-content:center;align-items:baseline;gap:10px;margin-bottom:16px}
+.bundle-price{font-size:28px;font-weight:800}
+.bundle-orig{font-size:15px;text-decoration:line-through;opacity:.5}
+.bundle-save{font-size:10.5px;background:rgba(255,255,255,.2);padding:4px 8px;border-radius:100px;font-weight:600}
+.bundle-btn{width:100%;padding:14px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.15);color:#fff;font-size:14.5px;font-weight:700;border-radius:var(--rm);cursor:pointer;transition:transform .15s;box-shadow:none;font-family:inherit;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.bundle-btn:active{transform:scale(.97)}
+
+/* Next steps */
+.ns{background:var(--sf);border-radius:var(--r);padding:18px 20px;margin-bottom:10px;border:1px solid var(--bdr-l);display:flex;gap:14px;align-items:center;box-shadow:var(--s1)}
+.ns-icon{font-size:28px;flex-shrink:0}
+.ns-info{flex:1;min-width:0}
+.ns-info h4{font-size:14px;font-weight:700}
+.ns-info p{font-size:12px;color:var(--t2);margin-top:2px;line-height:1.45}
+.ns-btn{font-size:12px;font-weight:700;padding:8px 16px;border-radius:var(--rs);border:1.5px solid var(--bdr);background:var(--sf);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0;font-family:inherit}
+.ns-btn:active{transform:scale(.95)}
+.ns-btn.primary{background:var(--brand);color:#fff;border-color:var(--brand)}
+
+/* Footer */
+.ftr{padding:32px 20px;text-align:center;border-top:1px solid var(--bdr-l);margin-top:16px}
+.ftr-brand{font-size:14px;font-weight:700;color:var(--t3);letter-spacing:-.3px;opacity:.4}
+.ftr-links{margin-top:10px;display:flex;justify-content:center;gap:16px;font-size:11.5px}
+.ftr-links a{color:var(--t3);text-decoration:none}
+.ftr-disc{font-size:10.5px;color:var(--t3);margin-top:12px;line-height:1.6;max-width:300px;margin-left:auto;margin-right:auto}
+</style>
+</head>
+<body>
+<script>
+// ================================================================
+// CHECKPUP V10.1 â Redesigned Hero (Fully Self-Contained)
+// ================================================================
+
+// SVG ICON LIBRARY (Apple SF Symbols style, 1.5px stroke)
+var SVG_ICONS = {
+  scale: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><line x1="10" y1="6" x2="10" y2="14"/><line x1="6" y1="10" x2="14" y2="10"/></svg>',
+  battery: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="12" height="10" rx="1"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/><rect x="4" y="7" width="8" height="8" fill="currentColor"/></svg>',
+  leaf: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2c-3 4-4 7-4 10 0 3 2 5 4 5s4-2 4-5c0-3-1-6-4-10z"/></svg>',
+  brain: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8c0-1 1-2 2-2s2 .5 2 2c0 1-.5 2-1 2.5M15 8c0-1-1-2-2-2s-2 .5-2 2c0 1 .5 2 1 2.5M6 10h8M5 14c0 1-1 3-3 3M15 14c0 1 1 3 3 3"/></svg>',
+  stomach: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-1 0-2 .5-2 1.5v4c0 1 1 3 2 4h4c1-1 2-3 2-4v-4c0-1-1-1.5-2-1.5s-1 1-1 1-1-1-1-1z"/></svg>',
+  droplet: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2c0 0-2 3-2 5 0 2.2 1.8 4 4 4s4-1.8 4-4c0-2-2-5-2-5z"/></svg>',
+  shield: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l6-2 6 2v4c0 5-6 7-6 7s-6-2-6-7v-4z"/></svg>',
+  heart: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17c-4-2-6-4-6-7 0-2 1-4 3-4 1 0 2 .5 3 1.5 1-1 2-1.5 3-1.5 2 0 3 2 3 4 0 3-2 5-6 7z"/></svg>',
+  sparkle: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v4M10 14v4M2 10h4M14 10h4M4 4l3 3M13 13l3 3M16 4l-3 3M7 13l-3 3"/></svg>',
+  flexArm: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-2 2-4 4-4s3 1 3 3v4M11 8c1 0 2 0 3 1l2-3M14 14v-2c0-1 1-2 2-2h1"/></svg>',
+  zap: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l3 7h6l-5 4 2 7-6-4-6 4 2-7-5-4h6l3-7z"/></svg>',
+  checkmark: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 6l-10 10-5-5"/></svg>',
+  stethoscope: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="2"/><path d="M8 7c-2 0-3 1-3 3M8 7c2 0 3 1 3 3M5 10c-1 0-2 1-2 2s1 2 2 2M11 10c1 0 2 1 2 2s-1 2-2 2"/></svg>',
+  refresh: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10c0-4 3-7 7-7s7 3 7 7M16 8l2 2-2 2M4 12l-2-2 2-2"/></svg>',
+  package: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="14" height="14" rx="1"/><line x1="10" y1="3" x2="10" y2="17"/><line x1="3" y1="10" x2="17" y2="10"/><path d="M10 3L17 7L17 10"/></svg>',
+  warning: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2l8 14H2l8-14z"/><line x1="10" y1="9" x2="10" y2="13"/><circle cx="10" cy="16" r="0.5" fill="currentColor"/></svg>',
+  chevronRight: '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3l5 5-5 5"/></svg>',
+  chevronDown: '<svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 4.5L6 8L9.5 4.5"/></svg>',
+  alertCircle: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><line x1="10" y1="7" x2="10" y2="11"/><circle cx="10" cy="14" r="0.5" fill="currentColor"/></svg>'
+};
+
+// DATA
+var PET = {name:"Oscar",breed:"Mixed Breed",sex:"Male (Neutered)",age:"11 yrs",testDate:"January 2025",kitId:"CHK-7742",oxType:"Mixed Oxidizer"};
+
+var RATIOS = {
+  CaK:{ratio:"Ca/K",label:"Thyroid Function",short:"Thyroid",val:20.83,mean:4,
+    oneliner:"Oscar\u2019s thyroid is working much harder than it should",
+    plain:"This can affect his energy, weight, coat quality, and temperature regulation. A strained thyroid often shows up as unexplained weight changes, a dull coat, or cycles of lethargy and restlessness.",
+    reported:["weight fluctuations","coat changes","temperature sensitivity"],
+    systems:["Endocrine"],
+    signs:["Unexplained weight gain or loss","Dry or thinning coat","Lethargy or hyperactivity cycles"],
+    factors:["Chronic stress response","Age-related thyroid changes","Mineral imbalances","Elevated aluminum burden"],
+    actions:["Support thyroid with selenium and vitamin A+D","Adjust diet to mixed oxidizer profile","Discuss thyroid screening with your vet"]},
+  NaK:{ratio:"Na/K",label:"Vitality & Energy",short:"Energy",val:0.93,mean:2.2,
+    oneliner:"Oscar\u2019s cellular energy production is significantly low",
+    plain:"Low sodium-to-potassium means his cells aren\u2019t generating energy efficiently. This shows up as low stamina, slow recovery after walks, and general tiredness \u2014 especially in an older dog.",
+    reported:["low stamina","slow recovery after walks","general fatigue"],
+    systems:["Autonomic Nervous","Heart & Lung"],
+    signs:["Reluctance to exercise","Slow wound healing","Persistent low energy"],
+    factors:["Adrenal exhaustion","Chronic potassium imbalance","Age-related decline"],
+    actions:["Feed potassium-rich snacks daily (banana, sweet potato)","Reduce environmental stressors","Start adrenal support supplements"]},
+  NaMg:{ratio:"Na/Mg",label:"Adrenal & Stress",short:"Adrenal",val:0.46,mean:4,
+    oneliner:"Oscar\u2019s adrenal glands show signs of chronic depletion",
+    plain:"His adrenals have been working overtime managing stress. This affects immune response, inflammation control, and the ability to relax. It may explain the nervousness, noise sensitivity, and difficulty settling down.",
+    reported:["nervousness","difficulty relaxing","sensitivity to noise","hunger changes"],
+    systems:["Endocrine","Liver & Gallbladder"],
+    signs:["Anxious behavior or panting","Digestive upset during stress","Increased shedding"],
+    factors:["Chronic environmental stress","Aluminum toxicity burden","Age-related adrenal decline","Magnesium insufficiency"],
+    actions:["Create a calm, predictable daily routine","Add magnesium for nervous system support","Consider calming protocols before stressful events"]},
+  CaMg:{ratio:"Ca/Mg",label:"Blood Sugar",short:"Blood Sugar",val:7.67,mean:6.17,desc:"Blood sugar regulation is working well"},
+  CaP:{ratio:"Ca/P",label:"Autonomic Balance",short:"Autonomic",val:2.56,mean:2.6,desc:"Autonomic nervous system is balanced"},
+  ZnCu:{ratio:"Zn/Cu",label:"Inflammation",short:"Inflammation",val:7.27,mean:8,desc:"Inflammation markers are in a healthy range"},
+  FeCu:{ratio:"Fe/Cu",label:"Immune Defense",short:"Immune",val:0.97,mean:0.8,desc:"Immune resilience is strong"}
+};
+
+var TOXICS = [
+  {key:"Al",label:"Aluminum",val:10.46,max:0.12,
+    what:"A lightweight metal found widely in the environment. At 87\u00d7 the reference limit, this is Oscar\u2019s most urgent toxin concern.",
+    sources:["Aluminum bowls and cookware","Unfiltered tap water","Some commercial pet foods and treats","Certain vaccine adjuvants","Aluminum foil contact with food"],
+    reduce:["Switch to stainless steel or ceramic bowls immediately","Filter all drinking water (reverse osmosis or carbon block)","Review pet food ingredients for aluminum additives","Discuss vaccine protocols with your vet","Support liver detox with milk thistle and vitamin C"]},
+  {key:"Hg",label:"Mercury",val:0.008,max:0.025,
+    what:"A heavy metal that accumulates through diet, especially from fish. Oscar\u2019s level is well below the reference limit.",
+    sources:["Fish-based pet foods (tuna, swordfish, mackerel)","Contaminated water sources","Environmental pollution"],
+    reduce:["Choose low-mercury fish options (salmon, sardines, whitefish)","Maintain filtered water","Continue current feeding practices"]},
+  {key:"Se",label:"Selenium",val:0.053,max:0.06,
+    what:"An essential trace mineral that supports thyroid function and immunity. Oscar\u2019s level is approaching the upper limit.",
+    sources:["Organ meats (especially liver and kidney)","Brazil nuts and certain grains","Selenium-enriched pet foods"],
+    reduce:["Moderate organ meat portions to 2\u20133\u00d7 per week","Check pet food selenium content on labels","Balance with zinc-rich foods to support ratio"]},
+  {key:"Pb",label:"Lead",val:0.021,max:0.04,
+    what:"A toxic heavy metal with no safe level. Oscar\u2019s reading is within limits but worth monitoring given his other mineral imbalances.",
+    sources:["Old paint and dust in pre-1978 homes","Contaminated soil near roads or industrial areas","Some imported toys and accessories","Certain glazed ceramic bowls"],
+    reduce:["Test home for lead if built before 1978","Wipe paws after outdoor walks near roads","Avoid letting Oscar chew painted surfaces","Use HEPA filter to reduce household dust"]},
+  {key:"Ni",label:"Nickel",val:0.009,max:0.02,
+    what:"A metal found in many everyday items. Oscar\u2019s level is moderate \u2014 approaching the halfway point of the reference limit.",
+    sources:["Metal food and water bowls","Certain stainless steel alloys","Tap water from older pipes","Some commercial pet foods"],
+    reduce:["Use high-grade stainless steel (18/10) or ceramic bowls","Filter drinking water","Rotate protein sources in diet"]},
+  {key:"As",label:"Arsenic",val:0.004,max:0.015,
+    what:"A naturally occurring element found in soil and water. Oscar\u2019s level is low and well within the reference range.",
+    sources:["Rice and rice-based pet foods","Contaminated groundwater","Pressure-treated wood (older decks and fences)"],
+    reduce:["Limit rice-based foods in diet","Test well water if applicable","Avoid letting Oscar chew old treated wood"]},
+  {key:"Cd",label:"Cadmium",val:0.002,max:0.006,
+    what:"A toxic metal that accumulates over time. Oscar\u2019s level is very low, indicating minimal exposure.",
+    sources:["Certain fertilizers and contaminated soil","Some commercial pet foods","Secondhand smoke exposure"],
+    reduce:["Continue current low-exposure practices","Wash produce if sharing with Oscar","Maintain smoke-free home environment"]}
+];
+
+var SYSTEMS = [
+  {name:"Endocrine",icon:SVG_ICONS.scale,sev:"likely",detail:"Thyroid and adrenal glands are both showing stress. This system regulates metabolism, energy, and stress response.",ratios:"Ca/K, Na/Mg",
+    deep:"Oscar\u2019s Ca/K ratio of 20.83 (ideal 4.0) indicates significant thyroid stress, while Na/Mg of 0.46 (ideal 4.0) shows adrenal depletion. These two glands work together to regulate metabolism, energy production, and the stress response. When both are imbalanced, it creates a cascade affecting nearly every other body system.",
+    signs:["Unexplained weight changes","Cycles of lethargy and restlessness","Temperature sensitivity","Increased shedding or dry coat"],
+    actions:["Support thyroid with selenium and vitamin A+D","Add adrenal support supplements (magnesium, B vitamins)","Feed a mixed oxidizer diet tailored to his metabolic type","Reduce environmental stressors and create calm routines"]},
+  {name:"Autonomic NS",icon:SVG_ICONS.brain,sev:"possible",detail:"Controls involuntary functions like heart rate, digestion, and breathing. Low Na/K can affect autonomic balance.",ratios:"Na/K, Ca/P",
+    deep:"The autonomic nervous system controls all the involuntary functions \u2014 heart rate, digestion, breathing, and blood pressure. Oscar\u2019s Na/K ratio of 0.93 (ideal 2.2) suggests the sympathetic and parasympathetic branches may be out of balance, which can affect how well his body regulates itself at rest and under stress.",
+    signs:["Heart rate irregularities","Digestive issues after eating","Panting at rest","Difficulty settling down"],
+    actions:["Support cellular energy with potassium-rich foods","Ensure regular gentle exercise","Add omega-3 fatty acids for nerve health","Discuss a cardiac wellness check with your vet"]},
+  {name:"Digestive",icon:SVG_ICONS.stomach,sev:"moderate",detail:"Nutrient absorption and gut health. Adrenal stress and mineral imbalances can impair digestive efficiency.",ratios:"Na/Mg",
+    deep:"When adrenal function is low (Na/Mg 0.46 vs 4.0 ideal), the body produces less hydrochloric acid and digestive enzymes. This means Oscar may not be absorbing nutrients efficiently from his food, which can perpetuate mineral imbalances even with a good diet.",
+    signs:["Soft stools or inconsistent digestion","Gas or bloating after meals","Eating grass frequently","Food sensitivities"],
+    actions:["Add digestive enzymes with each meal","Introduce probiotics for gut flora balance","Feed smaller, more frequent meals","Include bone broth for gut lining support"]},
+  {name:"Liver",icon:SVG_ICONS.droplet,sev:"possible",detail:"Detoxification and metabolic processing. Elevated aluminum adds burden to liver detox pathways.",ratios:"Na/Mg, Al",
+    deep:"Oscar\u2019s liver is under extra load from the extremely elevated aluminum (87\u00d7 above reference). The liver is the primary organ for filtering toxins, and when aluminum accumulates this heavily, it can slow down other detox processes and affect bile production, fat metabolism, and hormone clearance.",
+    signs:["Sluggish energy or slow recovery","Occasional vomiting or loss of appetite","Yellowing of gums or inner ears","Sensitivity to fatty foods"],
+    actions:["Support liver with milk thistle supplement","Reduce aluminum exposure immediately (water, bowls)","Add liver-supportive foods (beets, leafy greens)","Discuss liver enzyme screening with your vet"]},
+  {name:"Immune",icon:SVG_ICONS.shield,sev:"moderate",detail:"Defense against infection and disease. Adrenal fatigue can suppress immune response over time.",ratios:"Fe/Cu, Zn/Cu",
+    deep:"While Oscar\u2019s immune-related mineral ratios (Fe/Cu and Zn/Cu) are within healthy ranges, chronic adrenal fatigue can still suppress immune function over time. The adrenals produce cortisol, which regulates inflammation and immune response \u2014 when depleted, the immune system may underperform.",
+    signs:["Slow wound healing","Recurring minor infections","Seasonal allergies getting worse","Low-grade inflammation"],
+    actions:["Continue supporting adrenal recovery","Add zinc and vitamin C for immune support","Ensure adequate rest and sleep","Consider colostrum supplement for immune modulation"]},
+  {name:"Heart & Lung",icon:SVG_ICONS.heart,sev:"possible",detail:"Cardiovascular and respiratory function. Low cellular energy (Na/K) can affect heart and lung performance.",ratios:"Na/K",
+    deep:"The Na/K ratio reflects cellular energy production. At 0.93 (ideal 2.2), Oscar\u2019s cells aren\u2019t producing energy efficiently, which directly impacts the heart and lungs \u2014 two of the most energy-demanding organs. This doesn\u2019t mean heart disease, but it suggests his cardiovascular system is working harder than it needs to.",
+    signs:["Exercise intolerance or tiring quickly on walks","Increased resting respiratory rate","Coughing after exertion","Slow recovery after activity"],
+    actions:["Support cellular energy with CoQ10 and taurine","Feed potassium-rich foods (banana, sweet potato)","Maintain gentle daily exercise routine","Discuss a cardiac wellness check at next vet visit"]},
+  {name:"Integumentary",icon:SVG_ICONS.sparkle,sev:"moderate",detail:"Skin, coat, and nails. Thyroid imbalance often shows up as coat changes, dryness, or shedding.",ratios:"Ca/K",
+    deep:"The thyroid gland directly controls skin and coat health. Oscar\u2019s Ca/K ratio of 20.83 indicates significant thyroid stress, which commonly manifests as coat problems first. The skin is the body\u2019s largest organ and one of the first places mineral imbalances become visible.",
+    signs:["Dry, flaky, or itchy skin","Excessive shedding or thinning coat","Slow nail growth","Hot spots or recurring skin irritation"],
+    actions:["Add omega-3 fatty acids (fish oil) daily","Support thyroid with selenium supplementation","Include zinc-rich foods for skin repair","Use gentle, chemical-free grooming products"]},
+  {name:"Muscular",icon:SVG_ICONS.flexArm,sev:"unlikely",detail:"Muscle function and recovery. Currently showing healthy mineral support for muscular system.",ratios:"Ca/P, Ca/Mg",
+    deep:"Good news \u2014 Oscar\u2019s calcium-to-phosphorus and calcium-to-magnesium ratios are both within optimal ranges, indicating that his muscles have the mineral support they need for proper contraction, relaxation, and recovery. This is one of his strongest areas.",
+    signs:["No concerning signs expected","Maintaining normal muscle tone","Good mobility for his age"],
+    actions:["Continue current nutrition plan","Maintain regular gentle exercise","Monitor for age-related changes"]},
+  {name:"Kidney",icon:SVG_ICONS.droplet,sev:"unlikely",detail:"Waste filtration and fluid balance. Kidney-related minerals are within healthy ranges.",ratios:"Ca/P",
+    deep:"Oscar\u2019s Ca/P ratio of 2.56 (ideal 2.6) is nearly perfect, suggesting his kidneys are effectively managing mineral filtration and fluid balance. This is especially positive given his age of 11 years, as kidney function often declines in senior dogs.",
+    signs:["No concerning signs expected","Maintaining healthy hydration levels","Normal urination patterns"],
+    actions:["Continue providing fresh filtered water","Maintain balanced protein intake","Routine kidney screening recommended at age 11+"]},
+  {name:"Nervous",icon:SVG_ICONS.zap,sev:"unlikely",detail:"Brain and nerve signaling. Core nervous system minerals are balanced.",ratios:"Ca/Mg, Na/K",
+    deep:"The nervous system depends on proper calcium-magnesium balance for signal transmission. Oscar\u2019s Ca/Mg ratio of 7.67 (ideal 6.17) is within a healthy range, meaning his nerve signaling pathways have adequate mineral support. The low Na/K may occasionally affect nerve energy, but core nervous system minerals are balanced.",
+    signs:["No major concerning signs","May show some stress-related nervousness (from adrenal fatigue, not nerve damage)"],
+    actions:["Continue magnesium supplementation for nerve support","Manage stress through routine and calm environment","Monitor for tremors or unusual twitching"]}
+];
+var SEV_MAP = {unlikely:{l:"Healthy",c:"var(--ok)",bg:"var(--ok-l)"},moderate:{l:"Monitor",c:"var(--caut)",bg:"var(--caut-l)"},possible:{l:"Possible",c:"var(--warn)",bg:"var(--warn-l)"},likely:{l:"Likely",c:"var(--crit)",bg:"var(--crit-l)"}};
+
+var PHASES = [
+  {name:"This week",when:"Highest impact first",color:"var(--crit)",items:[
+    {id:"w1",text:"Switch to filtered water for all drinking"},
+    {id:"w2",text:"Replace plastic bowls with stainless steel or ceramic"},
+    {id:"w3",text:"Begin mixed oxidizer diet",detail:"diet"},
+    {id:"w4",text:"Add potassium-rich snacks daily (banana, sweet potato)"}
+  ]},
+  {name:"Weeks 2\u20134",when:"Build the foundation",color:"var(--warn)",items:[
+    {id:"m1",text:"Start thyroid support",detail:"supp",supp:{name:"Selenium + Vitamin E",icon:SVG_ICONS.droplet,why:"Thyroid hormone conversion",price:"$24"}},
+    {id:"m2",text:"Start adrenal support",detail:"supp",supp:{name:"Adrenal Support Complex",icon:SVG_ICONS.leaf,why:"Nourish depleted adrenals",price:"$28"}},
+    {id:"m3",text:"Add magnesium for stress & nervous system",detail:"supp",supp:{name:"Magnesium Glycinate",icon:SVG_ICONS.sparkle,why:"Calms nerves, supports adrenals",price:"$20"}},
+    {id:"m4",text:"Add organ meats 2\u20133\u00d7/week (liver, heart)"},
+    {id:"m5",text:"Introduce digestive enzyme + probiotic with meals"},
+    {id:"m6",text:"Create a calm, predictable daily routine"}
+  ]},
+  {name:"Ongoing",when:"Maintain & monitor",color:"var(--act)",items:[
+    {id:"o1",text:"Continue supplement protocol"},
+    {id:"o2",text:"Add remaining supplements",detail:"supp",supp:{name:"Full supplement bundle",icon:SVG_ICONS.package,why:"All 6 targeted supplements",price:"$99"}},
+    {id:"o3",text:"Share this report with your veterinarian"},
+    {id:"o4",text:"Discuss thyroid and liver screening"},
+    {id:"o5",text:"Retest in 4 months to measure progress"}
+  ]}
+];
+
+// UTILITIES
+function getSev(k) {
+  var r = RATIOS[k], d = Math.abs(r.val - r.mean) / r.mean;
+  if (d < 0.25) return {lv:"grn",c:"var(--ok)",bg:"var(--ok-l)"};
+  if (d < 0.5)  return {lv:"ylw",c:"var(--caut)",bg:"var(--caut-l)"};
+  if (d < 1.5)  return {lv:"org",c:"var(--warn)",bg:"var(--warn-l)"};
+  return {lv:"red",c:"var(--crit)",bg:"var(--crit-l)"};
+}
+function getPos(k) {
+  var r = RATIOS[k], ratio = r.val / r.mean;
+  if (ratio <= 1) return 5 + ratio * 45;
+  return 50 + Math.min((ratio - 1) / 4, 1) * 45;
+}
+
+var KEYS = ["CaK","NaK","NaMg","CaMg","CaP","ZnCu","FeCu"];
+var PRI = KEYS.filter(function(k) { var s = getSev(k); return s.lv === "red" || s.lv === "org"; });
+var THR = KEYS.filter(function(k) { return getSev(k).lv === "grn"; });
+var sevColors = {grn:"var(--ok)",ylw:"var(--caut)",org:"var(--warn)",red:"var(--crit)"};
+
+// STATE
+var checkedItems = {};
+
+// RENDER
+function render() {
+  document.body.innerHTML = buildHeader() + buildHero() +
+    '<div class="sec">' + buildSecHdr("What we found") + buildFindings() + buildGoodNews() + '</div>' +
+    '<div id="health-scores" class="sec">' + buildSecHdr("Health Scores") + buildHealthScores() + '</div>' +
+    '<div class="sec" id="systems-section">' + buildSecHdr("Body Systems") + buildSystems() + '</div>' +
+    '<div class="sec" id="toxin-section">' + buildSecHdr("Toxic Metals") + buildToxin() + '</div>' +
+    '<div class="sec">' + buildSecHdr("Oscar\u2019s Plan") + buildPlan() + buildBundle() + '</div>' +
+    '<div class="sec">' + buildSecHdr("Track Progress") + buildRetest() + buildNextSteps() + '</div>' +
+    buildFooter();
+  bindEvents();
+}
+
+function buildHeader() {
+  var logoUrl = 'https://checkpup.com/cdn/shop/files/Asset_1_300x_c1e1b68c-32d8-4691-918c-48b3f7fca461_384x96.png?v=1634664606';
+  return '<div class="hdr"><div class="logo-txt"><img class="logo-img" src="' + logoUrl + '" alt="CheckPup"></div><div class="hdr-btns"><button class="hdr-btn">Share Report</button></div></div>';
+}
+
+function buildHero() {
+  var healthyCount = THR.length;
+  var total = KEYS.length;
+  var needsAttentionCount = SYSTEMS.filter(function(s) { return s.sev !== 'unlikely'; }).length;
+  var elevatedToxins = TOXICS.filter(function(t) { return t.val > t.max; }).length;
+  var radius = 28;
+  var circ = 2 * Math.PI * radius;
+  var pctHealthy = healthyCount / total;
+  var greenOffset = circ - (circ * pctHealthy);
+
+  var dogAvatar = '<div class="hero-avatar"><svg viewBox="0 0 40 40" fill="none">' +
+    '<g fill="#D4A04A">' +
+    '<circle cx="20" cy="14" r="6.5"/>' +
+    '<path d="M12 10c-2-1-4 0-5 2s0 3 2 4l1 1M28 10c2-1 4 0 5 2s0 3-2 4l-1 1"/>' +
+    '<path d="M16 9c-1-2-2-2-3-2s-1 1-1 2c0 1 .5 2 1.5 2s2-1 2.5-2z"/>' +
+    '<path d="M24 9c1-2 2-2 3-2s1 1 1 2c0 1-.5 2-1.5 2s-2-1-2.5-2z"/>' +
+    '<ellipse cx="20" cy="17" rx="2.5" ry="1.5"/>' +
+    '<path d="M8 22c-1 0-2 1-2 2v5c0 2 1 3 2 3h5v-4h-3v-3h3v-3z"/>' +
+    '<path d="M32 22c1 0 2 1 2 2v5c0 2-1 3-2 3h-5v-4h3v-3h-3v-3z"/>' +
+    '<path d="M16 22v8h8v-8M16 30c0 1 1 2 2 2h4c1 0 2-1 2-2"/>' +
+    '</g>' +
+    '</svg></div>';
+
+  var banner = '<div class="hero-banner"><div class="hero-id">' + dogAvatar +
+    '<div class="hero-info">' +
+      '<div class="hero-name">' + PET.name + '\u2019s Health Report</div>' +
+      '<div class="hero-meta">' + PET.breed + ' \u00b7 ' + PET.sex + ' \u00b7 ' + PET.age + '</div>' +
+    '</div></div>' +
+    '<div class="hero-vet">\u2022 Vet-Developed Analysis</div>';
+
+  var ring = '<div class="hero-ring-wrap">' +
+    '<svg class="hero-ring-svg" viewBox="0 0 72 72">' +
+      '<circle class="hero-ring-bg" cx="36" cy="36" r="' + radius + '"/>' +
+      '<circle class="hero-ring-fill" cx="36" cy="36" r="' + radius + '" stroke="#D4A04A" stroke-dasharray="' + circ.toFixed(1) + '" stroke-dashoffset="' + greenOffset.toFixed(1) + '"/>' +
+    '</svg>' +
+    '<div class="hero-ring-center"><div class="hero-ring-num">' + Math.round(pctHealthy * 100) + '</div><div class="hero-ring-of">Score</div></div></div>';
+
+  var oxTagSvg = '<svg style="width:14px;height:14px;display:inline-block;vertical-align:-2px" viewBox="0 0 24 24" fill="currentColor">' +
+    '<path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/>' +
+    '</svg>';
+
+  // TOP INSIGHT card (frosted glass on green header)
+  var topKey = PRI.length > 0 ? PRI[0] : KEYS[0];
+  var topR = RATIOS[topKey];
+  var topMult = (topR.val / topR.mean).toFixed(0);
+  var topNoun = topR.label.toLowerCase().replace(' function','').replace(' performance','').replace(' level','');
+  var card = '<div class="hero-card">' +
+    '<div class="hero-card-label">TOP INSIGHT</div>' +
+    '<div class="hero-card-title">' + PET.name + ' is in ' + topNoun + ' stress.</div>' +
+    '<div class="hero-card-desc">His ' + topR.label.toLowerCase() + ' ratio is ' + topMult + '\u00d7 above optimal, affecting energy, weight, and coat. The good news: diet and supplements can help.</div>' +
+    '<button class="hero-card-cta" data-scroll="systems-section">View recommendations \u2192</button>' +
+  '</div>';
+
+  // Build priority cards with SVG icons
+  var priCards = '';
+  if (PRI.length > 0) {
+    var priColors = {CaK:'var(--crit)',NaK:'var(--warn)',NaMg:'var(--caut)'};
+    var priIcons = {CaK:SVG_ICONS.scale,NaK:SVG_ICONS.zap,NaMg:SVG_ICONS.leaf};
+    priCards = '<div class="hero-priorities">' +
+      PRI.map(function(k, idx) {
+        var r = RATIOS[k];
+        var s = getSev(k);
+        var icon = priIcons[k] || SVG_ICONS.alertCircle;
+        var color = priColors[k] || 'var(--crit)';
+        var badgeLabel = s.lv === 'red' ? 'Priority' : 'Moderate';
+        return '<div class="hero-pri" data-scroll="finding-' + k + '">' +
+          '<div class="hero-pri-bar" style="background:' + color + '"></div>' +
+          '<div class="hero-pri-icon" style="background:' + s.bg + '">' + icon + '</div>' +
+          '<div class="hero-pri-body">' +
+            '<div class="hero-pri-label">' + r.label + '</div>' +
+            '<div class="hero-pri-sub">' + r.val + ' vs ' + r.mean + ' optimal</div>' +
+          '</div>' +
+          '<div class="hero-pri-val" style="background:' + s.bg + ';color:' + color + '">' + badgeLabel + '</div>' +
+          '<div class="hero-pri-chev">' + SVG_ICONS.chevronRight + '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+  }
+
+  // Healthy bar
+  var healthyBar = '';
+  if (THR.length > 0) {
+    var thrNames = THR.map(function(k) { return RATIOS[k].short; });
+    var thrDisplay = thrNames.slice(0, 2).join(', ');
+    if (thrNames.length > 2) thrDisplay = thrDisplay + ' +' + (thrNames.length - 2) + ' more';
+    healthyBar = '<div class="hero-healthy" data-scroll="good-news">' +
+      '<div class="hero-healthy-icon">\u2713</div>' +
+      '<div class="hero-healthy-txt">' + THR.length + ' areas thriving \u2014 ' + thrDisplay + '</div>' +
+      '<div class="hero-healthy-chev">' + SVG_ICONS.chevronRight + '</div>' +
+    '</div>';
+  }
+
+  // 4-box summary grid (V3 style with icons, bars, links)
+  var healthySystems = SYSTEMS.filter(function(s) { return s.sev === 'unlikely'; }).length;
+  var flaggedSystems = SYSTEMS.length - healthySystems;
+  var ringR = 16;
+  var ringC = 2 * Math.PI * ringR;
+  var ringPct = healthyCount / total;
+  var ringOff = ringC - (ringC * ringPct);
+
+  var gridBoxes = '<div class="hero-grid">' +
+    // Wellness Check - with mini ring
+    '<div class="hero-grid-box" data-scroll="health-scores">' +
+      '<div class="hero-grid-ring">' +
+        '<svg viewBox="0 0 40 40"><circle class="hero-grid-ring-bg" cx="20" cy="20" r="' + ringR + '"/>' +
+        '<circle class="hero-grid-ring-fill" cx="20" cy="20" r="' + ringR + '" stroke="var(--ok)" stroke-dasharray="' + ringC.toFixed(1) + '" stroke-dashoffset="' + ringOff.toFixed(1) + '"/></svg>' +
+        '<div class="hero-grid-ring-txt">' + healthyCount + '<span class="hero-grid-ring-of">OF ' + total + '</span></div>' +
+      '</div>' +
+      '<div class="hero-grid-label">Wellness Check</div>' +
+      '<div class="hero-grid-val">' + PRI.length + ' need attention</div>' +
+      '<div class="hero-grid-bar"><div class="hero-grid-bar-fill" style="width:' + Math.round(ringPct * 100) + '%;background:var(--ok)"></div></div>' +
+      '<div class="hero-grid-link">View details</div>' +
+    '</div>' +
+    // Systems Check - with stethoscope icon
+    '<div class="hero-grid-box" data-scroll="systems-section">' +
+      '<div class="hero-grid-icon">' + SVG_ICONS.stethoscope + '</div>' +
+      '<div class="hero-grid-label">Systems Check</div>' +
+      '<div class="hero-grid-val">' + flaggedSystems + ' flagged \u00b7 ' + healthySystems + ' healthy</div>' +
+      '<div class="hero-grid-link">View details</div>' +
+    '</div>' +
+    // Metabolism + Diet - with lightning icon
+    '<div class="hero-grid-box">' +
+      '<div class="hero-grid-icon" style="color:var(--brand)">' + SVG_ICONS.zap + '</div>' +
+      '<div class="hero-grid-label">Metabolism + Diet</div>' +
+      '<div class="hero-grid-val" style="color:var(--brand)">' + PET.oxType + '</div>' +
+      '<div class="hero-grid-pill">' + oxTagSvg + ' Tailored diet plan</div>' +
+    '</div>' +
+    // Toxic Metals - with warning icon + red bar
+    '<div class="hero-grid-box" data-scroll="toxin-section">' +
+      '<div class="hero-grid-icon" style="color:var(--warn)">' + SVG_ICONS.warning + '</div>' +
+      '<div class="hero-grid-label">Toxic Metals</div>' +
+      '<div class="hero-grid-val" style="color:var(--crit)">' + elevatedToxins + ' elevated</div>' +
+      '<div class="hero-grid-bar"><div class="hero-grid-bar-fill" style="width:' + Math.round(elevatedToxins / TOXICS.length * 100) + '%;background:var(--crit)"></div></div>' +
+      '<div class="hero-grid-link">View details</div>' +
+    '</div>' +
+  '</div>';
+
+  var body = '<div class="hero-body">' + gridBoxes + priCards + healthyBar + '</div>';
+  var heroDate = '<div class="hero-date">Tested ' + PET.testDate + ' \u00b7 Kit #' + PET.kitId + '</div>';
+
+  return banner + card + '</div>' + body + heroDate;
+}
+
+function buildSecHdr(label) {
+  return '<div class="sec-hdr"><span class="sec-lbl">' + label + '</span></div>';
+}
+
+function buildFindings() {
+  var cards = PRI.map(function(k, idx) {
+    var r = RATIOS[k], s = getSev(k), pos = getPos(k);
+    var deviation = r.val / r.mean;
+    var sevLabel, sevColor;
+    if (s.lv === 'org') { sevLabel = 'Concern \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--warn)'; }
+    else { sevLabel = 'Priority \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--crit)'; }
+
+    var innerHtml = '';
+    if (r.plain) {
+      innerHtml += '<div class="fc-plain">' + r.plain + '</div>';
+    }
+    if (r.reported) {
+      innerHtml += '<div class="fc-reported"><strong>What you told us: </strong>' + r.reported.join(", ") + '</div>';
+    }
+    innerHtml += '<div class="lab-wrap"><div class="lab-hdr"><span class="lab-ideal">Ideal: ' + r.mean + '</span><span class="lab-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+      '<div class="lab-track"><div class="lab-zone"></div><div class="lab-dot" style="left:' + pos + '%;background:' + s.c + '"></div></div>' +
+      '<div class="lab-labels"><span>Low</span><span>Optimal</span><span>High</span></div></div>';
+    if (r.systems) {
+      innerHtml += '<div class="fc-tags">' + r.systems.map(function(sys) {
+        return '<span class="fc-tag" style="background:' + s.bg + ';color:' + s.c + '">' + sys + '</span>';
+      }).join('') + '</div>';
+    }
+    if (r.actions) {
+      innerHtml += '<div class="fc-wtd"><div class="fc-wtd-hdr">What to do</div><ul>' +
+        r.actions.map(function(a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>';
+    }
+    if (r.signs || r.factors) {
+      innerHtml += '<div class="fc-deep">';
+      if (r.signs) {
+        innerHtml += '<div class="fc-dl">Signs to watch</div><ul class="fc-dlist">' +
+          r.signs.map(function(si) { return '<li>' + si + '</li>'; }).join('') + '</ul>';
+      }
+      if (r.factors) {
+        innerHtml += '<div class="fc-dl">Contributing factors</div><ul class="fc-dlist">' +
+          r.factors.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul>';
+      }
+      innerHtml += '</div>';
+    }
+
+    return '<div class="fc" data-toggle="fc" id="finding-' + k + '">' +
+      '<div class="fc-accent" style="background:' + s.c + '"></div>' +
+      '<div class="fc-compact">' +
+        '<div class="fc-num" style="background:' + s.bg + ';color:' + s.c + '">' + (idx + 1) + '</div>' +
+        '<div class="fc-body">' +
+          '<div class="fc-title">' + r.label + '</div>' +
+          '<div class="fc-sub" style="color:' + sevColor + '">' + sevLabel + '</div>' +
+        '</div>' +
+        '<div class="fc-chev">' + SVG_ICONS.chevronDown + '</div>' +
+      '</div>' +
+      '<div class="fc-expand"><div class="fc-inner">' + innerHtml + '</div></div>' +
+    '</div>';
+  }).join('');
+
+  return cards;
+}
+
+function buildGoodNews() {
+  if (THR.length === 0) return '';
+  var items = THR.map(function(k) {
+    var r = RATIOS[k], s = getSev(k);
+    return '<div class="gn-item">' +
+      '<div class="gn-dot">\u2713</div>' +
+      '<div>' +
+        '<div class="gn-name">' + r.label + '</div>' +
+        '<div class="gn-desc">Within optimal range at ' + r.val + ' (ideal: ' + r.mean + ')</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  return '<div class="gn" id="good-news">' +
+    '<div class="gn-banner">' +
+      '<div class="gn-banner-title">All ' + THR.length + ' Looking Good</div>' +
+      '<div class="gn-banner-sub">These ratios are thriving</div>' +
+    '</div>' +
+    '<div class="gn-list">' + items + '</div>' +
+  '</div>';
+}
+
+function buildHealthScores() {
+  var cards = KEYS.map(function(k) {
+    var r = RATIOS[k], s = getSev(k), pos = getPos(k);
+    var deviation = r.val / r.mean;
+    var sevLabel, sevColor;
+    if (s.lv === 'grn') { sevLabel = 'Thriving \u00b7 Within optimal range'; sevColor = 'var(--ok)'; }
+    else if (s.lv === 'ylw') { sevLabel = 'Watch \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--caut)'; }
+    else if (s.lv === 'org') { sevLabel = 'Concern \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--warn)'; }
+    else { sevLabel = 'Priority \u00b7 ' + deviation.toFixed(1) + '\u00d7 ' + (r.val > r.mean ? 'above' : 'below') + ' optimal'; sevColor = 'var(--crit)'; }
+
+    // Expandable inner content: full detail for flagged ratios, short for healthy
+    var innerHtml = '';
+    var isFlagged = PRI.indexOf(k) !== -1;
+
+    if (isFlagged) {
+      // Full detail for flagged ratios
+      if (r.plain) {
+        innerHtml += '<div style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:12px">' + r.plain + '</div>';
+      }
+      if (r.reported) {
+        innerHtml += '<div class="fc-reported"><strong>What you told us: </strong>' + r.reported.join(", ") + '</div>';
+      }
+      innerHtml += '<div class="lab-wrap"><div class="lab-hdr"><span class="lab-ideal">Ideal: ' + r.mean + '</span><span class="lab-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+        '<div class="lab-track"><div class="lab-zone"></div><div class="lab-dot" style="left:' + pos + '%;background:' + s.c + '"></div></div>' +
+        '<div class="lab-labels"><span>Low</span><span>Optimal</span><span>High</span></div></div>';
+      if (r.systems) {
+        innerHtml += '<div class="fc-tags">' + r.systems.map(function(sys) {
+          return '<span class="fc-tag" style="background:' + s.bg + ';color:' + s.c + '">' + sys + '</span>';
+        }).join('') + '</div>';
+      }
+      if (r.actions) {
+        innerHtml += '<div class="fc-wtd"><div class="fc-wtd-hdr">What to do</div><ul>' +
+          r.actions.map(function(a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>';
+      }
+      if (r.signs || r.factors) {
+        innerHtml += '<div class="fc-deep">';
+        if (r.signs) {
+          innerHtml += '<div class="fc-dl">Signs to watch</div><ul class="fc-dlist">' +
+            r.signs.map(function(si) { return '<li>' + si + '</li>'; }).join('') + '</ul>';
+        }
+        if (r.factors) {
+          innerHtml += '<div class="fc-dl">Contributing factors</div><ul class="fc-dlist">' +
+            r.factors.map(function(f) { return '<li>' + f + '</li>'; }).join('') + '</ul>';
+        }
+        innerHtml += '</div>';
+      }
+    } else {
+      // Short content for healthy ratios
+      if (r.desc) {
+        innerHtml += '<div style="font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:12px">' + r.desc + '</div>';
+      }
+    }
+
+    return '<div class="hs" data-toggle="hs">' +
+      '<div class="hs-compact">' +
+        '<div class="hs-top">' +
+          '<div class="hs-dot" style="background:' + s.c + '"></div>' +
+          '<div class="hs-name">' + r.label + '</div>' +
+          '<div class="hs-chev">\u25BE</div>' +
+        '</div>' +
+        '<div class="hs-sev" style="color:' + sevColor + ';padding-left:18px">' + sevLabel + '</div>' +
+        '<div class="hs-gradient">' +
+          '<div class="hs-gradient-bar"></div>' +
+          '<div class="hs-gradient-dot" style="left:' + pos + '%"></div>' +
+        '</div>' +
+        '<div class="hs-gradient-labels"><span>Optimal</span><span>Watch</span><span>Concern</span><span>Priority</span></div>' +
+        '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+      '</div>' +
+      '<div class="hs-expand"><div class="hs-inner">' + innerHtml + '</div></div>' +
+    '</div>';
+  }).join('');
+
+  return cards;
+}
+
+
+function buildSystems() {
+  // Separate systems by severity
+  var needsAttention = SYSTEMS.filter(function(sys) {
+    return sys.sev === 'likely' || sys.sev === 'possible' || sys.sev === 'moderate';
+  });
+  var lookingGood = SYSTEMS.filter(function(sys) {
+    return sys.sev === 'unlikely';
+  });
+
+  // Build tiles for "needs attention" (expandable, full format)
+  var needsAttentionTiles = needsAttention.map(function(sys) {
+    var sv = SEV_MAP[sys.sev];
+    var deepHtml = '';
+    if (sys.deep) {
+      var signsList = sys.signs ? '<div class="sys-deep-label">Signs to watch</div><ul class="sys-deep-list">' +
+        sys.signs.map(function(s) { return '<li>' + s + '</li>'; }).join('') + '</ul>' : '';
+      var actionsList = sys.actions ? '<div class="sys-deep-label">What to do</div><ul class="sys-deep-list">' +
+        sys.actions.map(function(a) { return '<li>' + a + '</li>'; }).join('') + '</ul>' : '';
+      deepHtml = '<div class="sys-more" data-toggle="sys-deep"><span>More Details\u2026</span><span class="sys-more-chev">\u25BE</span></div>' +
+        '<div class="sys-deep"><div class="sys-deep-inner">' +
+          '<div class="sys-deep-p">' + sys.deep + '</div>' +
+          signsList + actionsList +
+        '</div></div>';
+    }
+    return '<div class="sys-tile" data-toggle="sys-tile">' +
+      '<div class="sys-tile-top">' +
+        '<div class="sys-icon" style="background:' + sv.bg + ';color:' + sv.c + '">' + sys.icon + '</div>' +
+        '<div class="sys-name">' + sys.name + '</div>' +
+        '<span class="sys-pill" style="background:' + sv.bg + ';color:' + sv.c + '">' + sv.l + '</span>' +
+        '<div class="sys-tile-chev">\u25BE</div>' +
+      '</div>' +
+      '<div class="sys-tile-detail"><div class="sys-tile-inner">' +
+        sys.detail +
+        '<div class="sys-tile-ratios">Related ratios: ' + sys.ratios + '</div>' +
+        deepHtml +
+      '</div></div></div>';
+  }).join('');
+
+  // Build summary rows for "looking good" (compact, non-expandable)
+  var lookingGoodHtml = '';
+  if (lookingGood.length > 0) {
+    var goodRows = lookingGood.map(function(sys) {
+      var sv = SEV_MAP[sys.sev];
+      return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bdr-l)">' +
+        '<div class="sys-icon" style="background:' + sv.bg + ';color:' + sv.c + ';flex-shrink:0">' + sys.icon + '</div>' +
+        '<div style="flex:1">' +
+          '<div style="font-size:var(--fs-base);font-weight:600;color:var(--t1)">' + sys.name + '</div>' +
+        '</div>' +
+        '<span class="sys-pill" style="background:' + sv.bg + ';color:' + sv.c + ';white-space:nowrap">' + sv.l + '</span>' +
+      '</div>';
+    }).join('');
+    lookingGoodHtml = '<div style="margin-top:20px">' +
+      '<div class="sec-lbl" style="margin-bottom:12px">LOOKING GOOD</div>' +
+      '<div style="background:var(--sf);border-radius:var(--rm);border:1px solid var(--bdr-l);padding:12px 16px">' +
+      goodRows +
+      '</div></div>';
+  }
+
+  var html = '<div style="margin-top:20px">' +
+    '<div class="sec-lbl" style="margin-bottom:12px">NEEDS ATTENTION</div>' +
+    '<div class="sys-grid">' + needsAttentionTiles + '</div>' +
+    lookingGoodHtml +
+    '</div>';
+  return html;
+}
+
+function buildToxin() {
+  var bars = TOXICS.map(function(t) {
+    var hi = t.val > t.max;
+    var pct = Math.min((t.val / (t.max * 2)) * 100, 100);
+    var ratio = t.val / t.max;
+    var valText, valColor, valBg;
+    if (hi) {
+      valText = 'Eliminate \u00b7 ' + t.val;
+      valColor = 'var(--crit)';
+      valBg = 'var(--crit-l)';
+    } else if (ratio > 0.6) {
+      valText = 'Reduce';
+      valColor = 'var(--warn)';
+      valBg = 'var(--warn-l)';
+    } else {
+      valText = 'Monitor';
+      valColor = 'var(--caut)';
+      valBg = 'var(--caut-l)';
+    }
+    // Per-element education expandable
+    var eduHtml = '';
+    if (t.what) {
+      var srcList = t.sources ? '<div class="tox-edu-label">Common sources</div><ul class="tox-edu-list">' +
+        t.sources.map(function(s) { return '<li>' + s + '</li>'; }).join('') + '</ul>' : '';
+      var redList = t.reduce ? '<div class="tox-edu-label">How to ' + (hi ? 'eliminate' : ratio > 0.6 ? 'reduce' : 'maintain') + '</div><ul class="tox-edu-list">' +
+        t.reduce.map(function(r) { return '<li>' + r + '</li>'; }).join('') + '</ul>' : '';
+      eduHtml = '<div class="tox-row-edu"><div class="tox-edu-inner">' +
+        '<div class="tox-edu-what">' + t.what + '</div>' +
+        srcList + redList + '</div></div>';
+    }
+    return '<div class="tox-row-wrap" data-toggle="tox-edu">' +
+      '<div class="tox-row"><div class="tox-lbl">' + t.label + '</div>' +
+      '<div class="tox-bar"><div class="tox-fill" style="width:' + (hi ? 100 : pct) + '%;background:' + (hi ? 'var(--crit)' : ratio > 0.6 ? 'var(--warn)' : 'var(--caut)') + '"></div></div>' +
+      '<div class="tox-val" style="color:' + valColor + ';background:' + valBg + '">' + valText + '</div></div>' +
+      '<div class="tox-row-more"><span>Learn more</span><span class="tox-more-chev">\u25BE</span></div>' +
+      eduHtml + '</div>';
+  }).join('');
+
+  return '<div class="tox" data-toggle="tox">' +
+    '<div class="tox-top"><div class="tox-title" style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;flex-shrink:0">' + SVG_ICONS.warning + '</span>Aluminum Elevated</div><div class="tox-badge">87\u00d7 above ref</div></div>' +
+    '<div class="tox-sum">Oscar\u2019s aluminum level is significantly elevated. All 6 other metals tested are below reference limits.</div>' +
+    '<div class="tox-hint">Tap for details \u25BE</div>' +
+    '<div class="tox-expand"><div class="tox-inner">' + bars +
+    '</div></div></div>';
+}
+
+function buildPlan() {
+  var phasesHtml = PHASES.map(function(phase, pi) {
+    var items = phase.items.map(function(item) {
+      var isChecked = checkedItems[item.id];
+      var extra = '';
+      if (item.detail === "diet") {
+        extra = '<div class="diet-card"><div class="diet-card-title">Mixed oxidizer diet</div>' +
+          '<div class="diet-card-row"><strong>Best: </strong>Fish, chicken, turkey, eggs, organ meats</div>' +
+          '<div class="diet-card-row"><strong>Healthy fats: </strong>Coconut oil, olive oil, fatty fish</div>' +
+          '<div class="diet-card-row"><strong>Moderate: </strong>Sweet potato, leafy greens, berries</div>' +
+          '<div class="diet-card-row"><strong>Avoid: </strong>Kibble, white rice, corn, grain flours</div></div>';
+      }
+      if (item.detail === "supp" && item.supp) {
+        var sp = item.supp;
+        extra = '<div class="supp-card"><div class="supp-card-icon">' + sp.icon + '</div>' +
+          '<div style="flex:1;min-width:0"><div class="supp-card-name">' + sp.name + '</div><div class="supp-card-why">' + sp.why + '</div></div>' +
+          '<div class="supp-card-price">' + sp.price + '</div></div>';
+      }
+      return '<div class="ci" data-check="' + item.id + '">' +
+        '<div class="ci-box' + (isChecked ? ' on' : '') + '">\u2713</div>' +
+        '<div class="ci-txt' + (isChecked ? ' done' : '') + '">' + item.text + '</div></div>' + extra;
+    }).join('');
+
+    var doneCount = phase.items.filter(function(it) { return checkedItems[it.id]; }).length;
+    var pct = Math.round(doneCount / phase.items.length * 100);
+
+    return '<div class="phase" data-phase="' + pi + '">' +
+      '<div class="ph-hdr"><div class="ph-dot" style="background:' + phase.color + ';box-shadow:0 0 0 3px var(--sf)"></div>' +
+        '<div><div class="ph-name">' + phase.name + '</div><div class="ph-when">' + phase.when + '</div></div></div>' +
+      '<div class="ph-prog"><div class="ph-prog-bar"><div class="ph-prog-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="ph-prog-pct">' + pct + '%</div></div>' +
+      items + '</div>';
+  }).join('');
+
+  return '<div class="plan"><div class="plan-title">Oscar\u2019s Plan</div>' +
+    '<div class="plan-desc">Everything in one place \u2014 diet, supplements, and lifestyle changes organized by when to start. Check off items as you go.</div>' +
+    phasesHtml + '</div>';
+}
+
+function buildBundle() {
+  return '<div class="bundle"><h3>' + SVG_ICONS.package + ' Oscar\u2019s Complete Bundle</h3>' +
+    '<p class="bundle-sub">All 6 supplements selected for his mineral profile \u2014 in one package.</p>' +
+    '<div class="bundle-row"><span class="bundle-price">$99</span><span class="bundle-orig">$149</span><span class="bundle-save">Save 33%</span></div>' +
+    '<button class="bundle-btn">Get Oscar\u2019s Bundle</button></div>';
+}
+
+function buildNextSteps() {
+  return '<div class="ns"><div class="ns-icon" style="font-size:20px;display:flex;align-items:center;justify-content:center">' + SVG_ICONS.stethoscope + '</div><div class="ns-info"><h4>Share with your vet</h4><p>Send Oscar\u2019s full report for professional review</p></div><button class="ns-btn">Share</button></div>' +
+    '<div class="ns"><div class="ns-icon" style="font-size:20px;display:flex;align-items:center;justify-content:center">' + SVG_ICONS.refresh + '</div><div class="ns-info"><h4>Retest in 4 months</h4><p>Track progress and measure improvement</p></div><button class="ns-btn primary">Order Retest \u2014 $99</button></div>';
+}
+
+function buildRetest() {
+  return '<div class="retest">' +
+    '<h3>Track Oscar\u2019s Progress</h3>' +
+    '<p>Retest in 4 months to measure improvement from diet and supplement changes.</p>' +
+    '<div class="timeline">' +
+      '<div class="tl-step"><div class="tl-dot"></div><div class="tl-label">Today</div></div>' +
+      '<div class="tl-line"></div>' +
+      '<div class="tl-step"><div class="tl-dot mid" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:12px">' + SVG_ICONS.leaf + '</div><div class="tl-label">Start changes</div></div>' +
+      '<div class="tl-line"></div>' +
+      '<div class="tl-step"><div class="tl-dot future"></div><div class="tl-label">Retest (4 mo)</div></div>' +
+    '</div>' +
+    '<button class="retest-btn">Order Retest Kit \u2014 $99</button></div>';
+}
+
+function buildFooter() {
+  var logoUrl = 'https://checkpup.com/cdn/shop/files/Asset_1_300x_c1e1b68c-32d8-4691-918c-48b3f7fca461_384x96.png?v=1634664606';
+  return '<div class="ftr"><div class="ftr-brand"><img src="' + logoUrl + '" alt="CheckPup" style="height:22px;object-fit:contain;opacity:.7"></div>' +
+    '<div class="ftr-links"><a href="https://checkpup.com">Shop</a><a href="#">Help</a><a href="#">Privacy</a></div>' +
+    '<div class="ftr-disc">For informational purposes only. Does not replace veterinary advice. Consult your vet before making changes to diet or supplements.</div></div>';
+}
+
+// EVENT BINDING (event delegation)
+function bindEvents() {
+  document.addEventListener('click', function(e) {
+    // Scroll-to (hero priority cards + healthy bar)
+    var scrollEl = e.target.closest('[data-scroll]');
+    if (scrollEl) {
+      var id = scrollEl.getAttribute('data-scroll');
+      var el = document.getElementById(id);
+      if (el) {
+        var offset = 80;
+        var y = el.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({top: y, behavior: 'smooth'});
+      }
+      return;
+    }
+
+    // Health score card expand/collapse
+    var hs = e.target.closest('[data-toggle="hs"]');
+    if (hs && !e.target.closest('.hs-inner')) {
+      hs.classList.toggle('open');
+      return;
+    }
+
+    // Finding card expand/collapse
+    var fc = e.target.closest('[data-toggle="fc"]');
+    if (fc && !e.target.closest('.fc-inner')) {
+      fc.classList.toggle('open');
+      return;
+    }
+
+    // Body system tile expand/collapse
+    var sysTile = e.target.closest('[data-toggle="sys-tile"]');
+    if (sysTile && !e.target.closest('.sys-tile-inner')) {
+      sysTile.classList.toggle('open');
+      return;
+    }
+
+    // Toxin per-element education expand
+    var toxEdu = e.target.closest('[data-toggle="tox-edu"]');
+    if (toxEdu && !e.target.closest('.tox-edu-inner')) {
+      toxEdu.classList.toggle('open');
+      e.stopPropagation();
+      return;
+    }
+
+    // Toxin card expand
+    var tox = e.target.closest('[data-toggle="tox"]');
+    if (tox && !e.target.closest('.tox-inner')) {
+      tox.classList.toggle('open');
+      return;
+    }
+
+    // Body system "More Details..." deep expand
+    var sysDeep = e.target.closest('[data-toggle="sys-deep"]');
+    if (sysDeep) {
+      var tile = sysDeep.closest('.sys-tile');
+      if (tile) tile.classList.toggle('deep');
+      e.stopPropagation();
+      return;
+    }
+
+    // Checkboxes
+    var ci = e.target.closest('[data-check]');
+    if (ci) {
+      var cid = ci.getAttribute('data-check');
+      checkedItems[cid] = !checkedItems[cid];
+      var box = ci.querySelector('.ci-box');
+      var txt = ci.querySelector('.ci-txt');
+      if (box) box.classList.toggle('on', checkedItems[cid]);
+      if (txt) txt.classList.toggle('done', checkedItems[cid]);
+      updatePhaseProgress();
+      return;
+    }
+  });
+}
+
+function updatePhaseProgress() {
+  PHASES.forEach(function(phase, pi) {
+    var doneCount = phase.items.filter(function(it) { return checkedItems[it.id]; }).length;
+    var pct = Math.round(doneCount / phase.items.length * 100);
+    var phaseEl = document.querySelector('[data-phase="' + pi + '"]');
+    if (phaseEl) {
+      var fill = phaseEl.querySelector('.ph-prog-fill');
+      var label = phaseEl.querySelector('.ph-prog-pct');
+      if (fill) fill.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+    }
+  });
+}
+
+// INIT
+render();
+</script>
+</body>
+</html>
+
