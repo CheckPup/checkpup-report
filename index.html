@@ -681,7 +681,7 @@ function buildHero() {
       '<div class="hero-grid-link">View details</div>' +
     '</div>' +
     // Metabolism + Diet - with lightning icon
-    '<div class="hero-grid-box">' +
+    '<div class="hero-grid-box" data-scroll="plan-section">' +
       '<div class="hero-grid-icon" style="color:var(--brand)">' + SVG_ICONS.zap + '</div>' +
       '<div class="hero-grid-label">Metabolism + Diet</div>' +
       '<div class="hero-grid-val" style="color:var(--brand)">' + PET.oxType + '</div>' +
@@ -955,7 +955,7 @@ function buildPlan() {
       items + '</div>';
   }).join('');
 
-  return '<div class="plan"><div class="plan-title">Oscar\u2019s Plan</div>' +
+  return '<div class="plan" id="plan-section"><div class="plan-title">Oscar\u2019s Plan</div>' +
     '<div class="plan-desc">Everything in one place \u2014 diet, supplements, and lifestyle changes organized by when to start. Check off items as you go.</div>' +
     phasesHtml + '</div>';
 }
