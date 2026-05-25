@@ -609,12 +609,21 @@ function render() {
 }
 
 function buildLabModal() {
-  // Pet info
+  // Pet info — handle blank breed and ISO date format
+  var displayBreed = PET.breed && PET.breed.trim() ? PET.breed : 'Not specified';
+  var displayDate = PET.testDate || '';
+  if (displayDate && displayDate.indexOf('T') > -1) {
+    var dt = new Date(displayDate);
+    if (!isNaN(dt.getTime())) {
+      var months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      displayDate = months[dt.getMonth()] + ' ' + dt.getDate() + ', ' + dt.getFullYear();
+    }
+  }
   var petInfo = '<dl class="lab-modal-pet">' +
     '<dt>Patient</dt><dd>' + PET.name + '</dd>' +
     '<dt>Kit ID</dt><dd>' + PET.kitId + '</dd>' +
-    '<dt>Breed</dt><dd>' + PET.breed + '</dd>' +
-    '<dt>Test Date</dt><dd>' + PET.testDate + '</dd>' +
+    '<dt>Breed</dt><dd>' + displayBreed + '</dd>' +
+    '<dt>Test Date</dt><dd>' + displayDate + '</dd>' +
     '<dt>Sex</dt><dd>' + PET.sex + '</dd>' +
     '<dt>Metabolic Type</dt><dd>' + PET.oxType + '</dd>' +
   '</dl>';
@@ -708,13 +717,13 @@ function buildLabModal() {
 
 function buildHeader() {
   var logoUrl = 'https://checkpup.com/cdn/shop/files/Asset_1_300x_c1e1b68c-32d8-4691-918c-48b3f7fca461_384x96.png?v=1634664606';
-  return '<div class="hdr"><div class="logo-txt"><img class="logo-img" src="' + logoUrl + '" alt="CheckPup"></div><div class="hdr-btns"><button class="hdr-btn" data-action="open-lab">Lab Values</button><button class="hdr-btn">Share Report</button></div></div>';
+  return '<div class="hdr"><div class="logo-txt"><img class="logo-img" src="' + logoUrl + '" alt="CheckPup"></div><div class="hdr-btns"><button class="hdr-btn" data-action="open-lab">Lab Values</button><button class="hdr-btn" data-action="share-report">Share Report</button></div></div>';
 }
 
 function buildHero() {
   var healthyCount = THR.length;
   var total = KEYS.length;
-  var needsAttentionCount = SYSTEMS.filter(function(s) { return s.sev !== 'unlikely'; }).length;
+  var needsAttentionCount = SYSTEMS.filter(function(s) { return normSev(s) !== 'unlikely'; }).length;
   var elevatedToxins = TOXICS.filter(function(t) { return t.val > t.max; }).length;
   var radius = 28;
   var circ = 2 * Math.PI * radius;
@@ -755,12 +764,15 @@ function buildHero() {
   // TOP INSIGHT card (frosted glass on green header)
   var topKey = PRI.length > 0 ? PRI[0] : KEYS[0];
   var topR = RATIOS[topKey];
-  var topMult = (topR.val / topR.mean).toFixed(0);
+  var topRatio = topR.val / topR.mean;
+  var topAbove = topR.val > topR.mean;
+  var topMult = topAbove ? topRatio.toFixed(1) : (1 / topRatio).toFixed(1);
+  var topDir = topAbove ? 'above' : 'below';
   var topNoun = topR.label.toLowerCase().replace(' function','').replace(' performance','').replace(' level','');
   var card = '<div class="hero-card">' +
     '<div class="hero-card-label">TOP INSIGHT</div>' +
     '<div class="hero-card-title">' + PET.name + ' is in ' + topNoun + ' stress.</div>' +
-    '<div class="hero-card-desc">' + (PET.sex === "Female" ? "Her " : "His ") + topR.label.toLowerCase() + ' ratio is ' + topMult + '\u00d7 above optimal, affecting energy, weight, and coat. The good news: diet and supplements can help.</div>' +
+    '<div class="hero-card-desc">' + (PET.sex === "Female" ? "Her " : "His ") + topR.label.toLowerCase() + ' ratio is ' + topMult + '\u00d7 ' + topDir + ' optimal, affecting energy, weight, and coat. The good news: diet and supplements can help.</div>' +
     '<button class="hero-card-cta" data-scroll="systems-section">View recommendations \u2192</button>' +
   '</div>';
 
@@ -775,7 +787,7 @@ function buildHero() {
         var s = getSev(k);
         var icon = priIcons[k] || SVG_ICONS.alertCircle;
         var color = priColors[k] || 'var(--crit)';
-        var badgeLabel = s.lv === 'red' ? 'Priority' : 'Moderate';
+        var badgeLabel = s.lv === 'red' ? 'Priority' : s.lv === 'org' ? 'Concern' : s.lv === 'ylw' ? 'Monitor' : 'Healthy';
         return '<div class="hero-pri" data-scroll="finding-' + k + '">' +
           '<div class="hero-pri-bar" style="background:' + color + '"></div>' +
           '<div class="hero-pri-icon" style="background:' + s.bg + '">' + icon + '</div>' +
@@ -804,7 +816,7 @@ function buildHero() {
   }
 
   // 4-box summary grid (V3 style with icons, bars, links)
-  var healthySystems = SYSTEMS.filter(function(s) { return s.sev === 'unlikely'; }).length;
+  var healthySystems = SYSTEMS.filter(function(s) { return normSev(s) === 'unlikely'; }).length;
   var flaggedSystems = SYSTEMS.length - healthySystems;
   var ringR = 16;
   var ringC = 2 * Math.PI * ringR;
@@ -1065,9 +1077,33 @@ function buildToxin() {
       eduHtml + '</div>';
   }).join('');
 
-  return '<div class="tox" data-toggle="tox">' +
-    '<div class="tox-top"><div class="tox-title" style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;flex-shrink:0">' + SVG_ICONS.warning + '</span>Aluminum Elevated</div><div class="tox-badge">87\u00d7 above ref</div></div>' +
-    '<div class="tox-sum">' + PET.name + '\u2019s aluminum level is significantly elevated. All 6 other metals tested are below reference limits.</div>' +
+  // Data-driven toxin summary
+  var elevated = TOXICS.filter(function(t) { return t.val > t.max; });
+  var safeCount = TOXICS.length - elevated.length;
+  var toxTitle, toxBadge, toxSum;
+  if (elevated.length === 0) {
+    toxTitle = 'All Clear';
+    toxBadge = 'All within range';
+    toxSum = PET.name + '\u2019s toxic metal levels are all within reference limits. Keep up the great work!';
+  } else if (elevated.length === 1) {
+    var el = elevated[0];
+    var elRatio = (el.val / el.max).toFixed(0);
+    toxTitle = el.label + ' Elevated';
+    toxBadge = elRatio + '\u00d7 above ref';
+    toxSum = PET.name + '\u2019s ' + el.label.toLowerCase() + ' level is significantly elevated.' + (safeCount > 0 ? ' All ' + safeCount + ' other metals tested are below reference limits.' : '');
+  } else {
+    toxTitle = elevated.length + ' Metals Elevated';
+    toxBadge = elevated.length + ' above ref';
+    toxSum = PET.name + ' has elevated levels of ' + elevated.map(function(e) { return e.label; }).join(', ') + '.' + (safeCount > 0 ? ' ' + safeCount + ' other metals are within limits.' : '');
+  }
+  var toxStyle = elevated.length === 0 ? 'background:var(--ok-bg);border-color:#C8E6C9' : '';
+  var toxTitleColor = elevated.length === 0 ? 'color:var(--ok)' : '';
+  var toxBadgeStyle = elevated.length === 0 ? 'background:var(--ok);color:#fff' : '';
+  var toxIcon = elevated.length === 0 ? SVG_ICONS.checkmark : SVG_ICONS.warning;
+
+  return '<div class="tox" data-toggle="tox"' + (toxStyle ? ' style="' + toxStyle + '"' : '') + '>' +
+    '<div class="tox-top"><div class="tox-title" style="display:flex;align-items:center;gap:8px;' + toxTitleColor + '"><span style="width:18px;height:18px;flex-shrink:0">' + toxIcon + '</span>' + toxTitle + '</div><div class="tox-badge"' + (toxBadgeStyle ? ' style="' + toxBadgeStyle + '"' : '') + '>' + toxBadge + '</div></div>' +
+    '<div class="tox-sum">' + toxSum + '</div>' +
     '<div class="tox-hint">Tap for details \u25BE</div>' +
     '<div class="tox-expand"><div class="tox-inner">' + bars +
     '</div></div></div>';
@@ -1148,6 +1184,27 @@ function buildFooter() {
 // EVENT BINDING (event delegation)
 function bindEvents() {
   document.addEventListener('click', function(e) {
+    // Share Report
+    var shareBtn = e.target.closest('[data-action="share-report"]');
+    if (shareBtn) {
+      var shareUrl = window.location.href;
+      var shareTitle = PET.name + "'s Health Report — CheckPup";
+      var shareText = "Check out " + PET.name + "'s health report from CheckPup.";
+      if (navigator.share) {
+        navigator.share({title: shareTitle, text: shareText, url: shareUrl}).catch(function(){});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(shareUrl).then(function() {
+          shareBtn.textContent = 'Link Copied!';
+          setTimeout(function() { shareBtn.textContent = 'Share Report'; }, 2000);
+        }).catch(function() {
+          prompt('Copy this link:', shareUrl);
+        });
+      } else {
+        prompt('Copy this link:', shareUrl);
+      }
+      return;
+    }
+
     // Lab modal open/close
     var labOpen = e.target.closest('[data-action="open-lab"]');
     if (labOpen) {
