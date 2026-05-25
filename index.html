@@ -813,7 +813,7 @@ function buildHero() {
     if (thrNames.length > 2) thrDisplay = thrDisplay + ' +' + (thrNames.length - 2) + ' more';
     healthyBar = '<div class="hero-healthy" data-scroll="good-news">' +
       '<div class="hero-healthy-icon">\u2713</div>' +
-      '<div class="hero-healthy-txt">' + THR.length + ' areas thriving \u2014 ' + thrDisplay + '</div>' +
+      '<div class="hero-healthy-txt">' + THR.length + (THR.length === 1 ? ' area' : ' areas') + ' thriving \u2014 ' + thrDisplay + '</div>' +
       '<div class="hero-healthy-chev">' + SVG_ICONS.chevronRight + '</div>' +
     '</div>';
   }
@@ -864,7 +864,15 @@ function buildHero() {
   '</div>';
 
   var body = '<div class="hero-body">' + gridBoxes + priCards + healthyBar + '</div>';
-  var heroDate = '<div class="hero-date">Tested ' + PET.testDate + ' \u00b7 Kit #' + PET.kitId + '</div>';
+  var displayTestDate = PET.testDate || '';
+  if (displayTestDate && displayTestDate.indexOf('T') > -1) {
+    var dtHero = new Date(displayTestDate);
+    if (!isNaN(dtHero.getTime())) {
+      var mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      displayTestDate = mNames[dtHero.getMonth()] + ' ' + dtHero.getDate() + ', ' + dtHero.getFullYear();
+    }
+  }
+  var heroDate = '<div class="hero-date">Tested ' + displayTestDate + ' \u00b7 Kit #' + PET.kitId + '</div>';
 
   return banner + card + '</div>' + body + heroDate;
 }
