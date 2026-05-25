@@ -960,18 +960,19 @@ function buildGoodNews() {
 
 
 
+function normSev(sys) { if (typeof sys.sev === "string") return sys.sev; var m = {0:"unlikely",1:"moderate",2:"possible",3:"likely",4:"likely",5:"likely"}; return m[sys.sev] || "unlikely"; }
 function buildSystems() {
   // Separate systems by severity
   var needsAttention = SYSTEMS.filter(function(sys) {
-    return sys.sev === 'likely' || sys.sev === 'possible' || sys.sev === 'moderate';
+    return normSev(sys) === 'likely' || normSev(sys) === 'possible' || normSev(sys) === 'moderate';
   });
   var lookingGood = SYSTEMS.filter(function(sys) {
-    return sys.sev === 'unlikely';
+    return normSev(sys) === 'unlikely';
   });
 
   // Build tiles for "needs attention" (expandable, full format)
   var needsAttentionTiles = needsAttention.map(function(sys) {
-    var sv = SEV_MAP[sys.sev];
+    var sv = SEV_MAP[normSev(sys)];
     var deepHtml = '';
     if (sys.deep) {
       var signsList = sys.signs ? '<div class="sys-deep-label">Signs to watch</div><ul class="sys-deep-list">' +
@@ -1002,7 +1003,7 @@ function buildSystems() {
   var lookingGoodHtml = '';
   if (lookingGood.length > 0) {
     var goodRows = lookingGood.map(function(sys) {
-      var sv = SEV_MAP[sys.sev];
+      var sv = SEV_MAP[normSev(sys)];
       return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bdr-l)">' +
         '<div class="sys-icon" style="background:' + sv.bg + ';color:' + sv.c + ';flex-shrink:0">' + sys.icon + '</div>' +
         '<div style="flex:1">' +
@@ -1096,7 +1097,7 @@ function buildPlan() {
     }).join('');
 
     var doneCount = phase.items.filter(function(it) { return checkedItems[it.id]; }).length;
-    var pct = Math.round(doneCount / phase.items.length * 100);
+    var pct = (phase.items.length ? Math.round(doneCount / phase.items.length * 100) : 0);
 
     return '<div class="phase" data-phase="' + pi + '">' +
       '<div class="ph-hdr"><div class="ph-dot" style="background:' + phase.color + ';box-shadow:0 0 0 3px var(--sf)"></div>' +
@@ -1113,7 +1114,7 @@ function buildPlan() {
 
 function buildBundle() {
   return '<div class="bundle"><h3>' + SVG_ICONS.package + ' ' + PET.name + '\u2019s Complete Bundle</h3>' +
-    '<p class="bundle-sub">All 6 supplements selected for his mineral profile \u2014 in one package.</p>' +
+    '<p class="bundle-sub">All 6 supplements selected for ' + (PET.sex === "Female" ? "her" : "his") + ' mineral profile \u2014 in one package.</p>' +
     '<div class="bundle-row"><span class="bundle-price">$99</span><span class="bundle-orig">$149</span><span class="bundle-save">Save 33%</span></div>' +
     '<button class="bundle-btn">Get ' + PET.name + '\u2019s Bundle</button></div>';
 }
@@ -1243,7 +1244,7 @@ function bindEvents() {
 function updatePhaseProgress() {
   PHASES.forEach(function(phase, pi) {
     var doneCount = phase.items.filter(function(it) { return checkedItems[it.id]; }).length;
-    var pct = Math.round(doneCount / phase.items.length * 100);
+    var pct = (phase.items.length ? Math.round(doneCount / phase.items.length * 100) : 0);
     var phaseEl = document.querySelector('[data-phase="' + pi + '"]');
     if (phaseEl) {
       var fill = phaseEl.querySelector('.ph-prog-fill');
