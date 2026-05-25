@@ -588,8 +588,8 @@ function getPos(k) {
 }
 
 var KEYS = ["CaK","NaK","NaMg","CaMg","CaP","ZnCu","FeCu"];
-var PRI = KEYS.filter(function(k) { var s = getSev(k); return s.lv === "red" || s.lv === "org"; });
-var THR = KEYS.filter(function(k) { return getSev(k).lv === "grn"; });
+var PRI = [];
+var THR = [];
 var sevColors = {grn:"var(--ok)",ylw:"var(--caut)",org:"var(--warn)",red:"var(--crit)"};
 
 // STATE
@@ -597,6 +597,9 @@ var checkedItems = {};
 
 // RENDER
 function render() {
+  // Recalculate PRI/THR from current RATIOS data (critical: must run after API data is loaded)
+  PRI = KEYS.filter(function(k) { var s = getSev(k); return s.lv === "red" || s.lv === "org"; });
+  THR = KEYS.filter(function(k) { return getSev(k).lv === "grn"; });
   document.body.innerHTML = buildHeader() + buildHero() +
     '<div class="sec" id="what-we-found">' + buildSecHdr("What we found") + buildFindings() + buildGoodNews() + '</div>' +
     '<div class="sec" id="systems-section">' + buildSecHdr("Body Systems") + buildSystems() + '</div>' +
@@ -746,7 +749,7 @@ function buildHero() {
   var banner = '<div class="hero-banner"><div class="hero-id">' + dogAvatar +
     '<div class="hero-info">' +
       '<div class="hero-name">' + PET.name + '\u2019s Health Report</div>' +
-      '<div class="hero-meta">' + PET.breed + ' \u00b7 ' + PET.sex + ' \u00b7 ' + PET.age + '</div>' +
+      '<div class="hero-meta">' + [PET.breed, PET.sex, PET.age].filter(function(v) { return v && String(v).trim(); }).join(' \u00b7 ') + '</div>' +
     '</div></div>' +
     '<div class="hero-vet">\u2022 Vet-Developed Analysis</div>';
 
@@ -772,7 +775,7 @@ function buildHero() {
   var card = '<div class="hero-card">' +
     '<div class="hero-card-label">TOP INSIGHT</div>' +
     '<div class="hero-card-title">' + PET.name + ' is in ' + topNoun + ' stress.</div>' +
-    '<div class="hero-card-desc">' + (PET.sex === "Female" ? "Her " : "His ") + topR.label.toLowerCase() + ' ratio is ' + topMult + '\u00d7 ' + topDir + ' optimal, affecting energy, weight, and coat. The good news: diet and supplements can help.</div>' +
+    '<div class="hero-card-desc">' + (PET.sex && PET.sex.indexOf("Female") > -1 ? "Her " : "His ") + topR.label.toLowerCase() + ' ratio is ' + topMult + '\u00d7 ' + topDir + ' optimal, affecting energy, weight, and coat. The good news: diet and supplements can help.</div>' +
     '<button class="hero-card-cta" data-scroll="systems-section">View recommendations \u2192</button>' +
   '</div>';
 
@@ -1005,8 +1008,8 @@ function buildSystems() {
         '<div class="sys-tile-chev">\u25BE</div>' +
       '</div>' +
       '<div class="sys-tile-detail"><div class="sys-tile-inner">' +
-        sys.detail +
-        '<div class="sys-tile-ratios">Related ratios: ' + sys.ratios + '</div>' +
+        (sys.detail || '') +
+        '<div class="sys-tile-ratios">' + (sys.ratios ? 'Related ratios: ' + sys.ratios : '') + '</div>' +
         deepHtml +
       '</div></div></div>';
   }).join('');
@@ -1110,7 +1113,7 @@ function buildToxin() {
 }
 
 function buildPlan() {
-  var phasesHtml = PHASES.map(function(phase, pi) {
+  var phasesHtml = PHASES.filter(function(phase) { return phase.items && phase.items.length > 0; }).map(function(phase, pi) {
     var items = phase.items.map(function(item) {
       var isChecked = checkedItems[item.id];
       var extra = '';
@@ -1150,7 +1153,7 @@ function buildPlan() {
 
 function buildBundle() {
   return '<div class="bundle"><h3>' + SVG_ICONS.package + ' ' + PET.name + '\u2019s Complete Bundle</h3>' +
-    '<p class="bundle-sub">All 6 supplements selected for ' + (PET.sex === "Female" ? "her" : "his") + ' mineral profile \u2014 in one package.</p>' +
+    '<p class="bundle-sub">All 6 supplements selected for ' + (PET.sex && PET.sex.indexOf("Female") > -1 ? "her" : "his") + ' mineral profile \u2014 in one package.</p>' +
     '<div class="bundle-row"><span class="bundle-price">$99</span><span class="bundle-orig">$149</span><span class="bundle-save">Save 33%</span></div>' +
     '<button class="bundle-btn">Get ' + PET.name + '\u2019s Bundle</button></div>';
 }
@@ -1299,7 +1302,7 @@ function bindEvents() {
 }
 
 function updatePhaseProgress() {
-  PHASES.forEach(function(phase, pi) {
+  PHASES.filter(function(p) { return p.items && p.items.length > 0; }).forEach(function(phase, pi) {
     var doneCount = phase.items.filter(function(it) { return checkedItems[it.id]; }).length;
     var pct = (phase.items.length ? Math.round(doneCount / phase.items.length * 100) : 0);
     var phaseEl = document.querySelector('[data-phase="' + pi + '"]');
@@ -1322,7 +1325,7 @@ function updatePhaseProgress() {
           fetch(apiUrl)
     .then(function(r){ return r.json(); })
     .then(function(d){
-      if (d.error) { document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif"><div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">Report not found</div><div style="color:#9C9C96">' + d.error + '</div></div></div>'; return; }
+      if (d.error) { var safeErr = document.createElement('div'); safeErr.textContent = d.error; document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif"><div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">Report not found</div><div style="color:#9C9C96">We couldn’t find a report for this kit ID. Please double-check and try again.</div></div></div>'; return; }
       if (d.pet) { PET = d.pet; }
       if (d.ratios) { RATIOS = d.ratios; }
       if (d.systems) { SYSTEMS = d.systems; }
@@ -1331,7 +1334,7 @@ function updatePhaseProgress() {
       if (d.phases) { PHASES = d.phases; }
       render();
     })
-    .catch(function(e){ console.error('CheckPup load error:', e); render(); document.title = PET.name + "\u2019s Health Report \u2014 CheckPup"; });
+    .catch(function(e){ console.error('CheckPup load error:', e); document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif"><div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">Unable to load report</div><div style="color:#9C9C96;max-width:320px;margin:0 auto">Something went wrong loading your report. Please check your internet connection and try refreshing the page.</div><button onclick="location.reload()" style="margin-top:20px;padding:10px 24px;background:var(--act);color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer">Try Again</button></div></div>'; });
 })();
 </script>
 </body>
