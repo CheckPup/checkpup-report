@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
-<title>Oscar's Health Report — CheckPup</title>
+<title>Health Report â CheckPup</title>
 <style>
 /* ================================================================
-   CHECKPUP V10.1 — Premium Health Report (Fully Self-Contained)
+   CHECKPUP V10.1 â Premium Health Report (Fully Self-Contained)
    Zero external dependencies. Redesigned entry screen.
    ================================================================ */
 @font-face {
@@ -35,7 +35,7 @@
 html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
 body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--t1);line-height:1.6;-webkit-font-smoothing:antialiased;max-width:420px;margin:0 auto}
 
-/* Header — dark green, matches screenshot exactly */
+/* Header â dark green, matches screenshot exactly */
 .hdr{padding:18px 20px 14px;background:#1B4332;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
 .logo-txt{display:flex;align-items:center}
 .logo-img{height:28px;object-fit:contain;filter:brightness(0) invert(1)}
@@ -43,7 +43,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .hdr-btn{font-size:13px;font-weight:600;padding:10px 22px;border-radius:100px;border:1.5px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;transition:all .2s;font-family:inherit;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .hdr-btn:active{transform:scale(.95);background:rgba(255,255,255,.15)}
 
-/* ======== HERO V10.4 — Green gradient ======== */
+/* ======== HERO V10.4 â Green gradient ======== */
 
 /* Dark green gradient banner (flows from header) */
 .hero-banner{background:linear-gradient(175deg,#1B4332 0%,#2D6A4F 50%,#40916C 100%);padding:8px 20px 20px;position:relative;overflow:hidden}
@@ -202,7 +202,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .fc-dlist li{font-size:12.5px;color:var(--t2);padding:3px 0 3px 14px;position:relative;line-height:1.5}
 .fc-dlist li::before{content:'\2022';position:absolute;left:0;color:var(--t3)}
 
-/* Good news — green banner header */
+/* Good news â green banner header */
 .gn{background:var(--sf);border-radius:var(--r);margin-bottom:12px;border:1px solid #C8E6C9;overflow:hidden;box-shadow:var(--s1)}
 .gn-banner{background:linear-gradient(135deg,#2E7D32 0%,#43A047 100%);padding:16px 18px;color:#fff}
 .gn-banner-title{font-size:16px;font-weight:800;letter-spacing:-.2px}
@@ -214,7 +214,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .gn-name{font-size:13.5px;font-weight:600}
 .gn-desc{font-size:12px;color:var(--t2);line-height:1.45;margin-top:1px}
 
-/* Body systems — expandable tiles */
+/* Body systems â expandable tiles */
 .sys-hdr{font-size:13px;font-weight:700;color:var(--t1);margin-bottom:10px}
 .sys-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
 .sys-tile{background:var(--sf);border-radius:var(--rm);border:1px solid var(--bdr-l);overflow:hidden;transition:box-shadow .2s}
@@ -264,7 +264,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .tox-row-wrap.open .tox-row-more .tox-more-chev{transform:rotate(180deg)}
 .tox-more-chev{transition:transform .25s;font-size:9px}
 
-/* Body system — More Details link */
+/* Body system â More Details link */
 .sys-more{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;color:var(--brand);margin-top:10px;cursor:pointer;padding:4px 0;transition:opacity .15s}
 .sys-more:active{opacity:.6}
 .sys-more-chev{font-size:10px;transition:transform .25s}
@@ -400,7 +400,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 <body>
 <script>
 // ================================================================
-// CHECKPUP V10.1 — Redesigned Hero (Fully Self-Contained)
+// CHECKPUP V10.1 â Redesigned Hero (Fully Self-Contained)
 // ================================================================
 
 // SVG ICON LIBRARY (Apple SF Symbols style, 1.5px stroke)
@@ -491,7 +491,7 @@ var TOXICS = [
     reduce:["Continue current low-exposure practices","Wash produce if sharing with Oscar","Maintain smoke-free home environment"]}
 ];
 
-// RAW MINERAL LEVELS (from lab report — scale values, color zones)
+// RAW MINERAL LEVELS (from lab report â scale values, color zones)
 var MINERALS = [
   {key:"Ca",name:"Calcium",val:148,lo:34,ideal:194,hi:610,color:"#1B4332"},
   {key:"Mg",name:"Magnesium",val:38,lo:12,ideal:62,hi:192,color:"#1B4332"},
@@ -601,7 +601,7 @@ function render() {
     '<div class="sec" id="what-we-found">' + buildSecHdr("What we found") + buildFindings() + buildGoodNews() + '</div>' +
     '<div class="sec" id="systems-section">' + buildSecHdr("Body Systems") + buildSystems() + '</div>' +
     '<div class="sec" id="toxin-section">' + buildSecHdr("Toxic Metals") + buildToxin() + '</div>' +
-    '<div class="sec">' + buildSecHdr("Oscar\u2019s Plan") + buildPlan() + buildBundle() + '</div>' +
+    '<div class="sec">' + buildSecHdr(PET.name + "\u2019s Plan") + buildPlan() + buildBundle() + '</div>' +
     '<div class="sec">' + buildSecHdr("Track Progress") + buildRetest() + buildNextSteps() + '</div>' +
     buildFooter() +
     buildLabModal();
@@ -661,7 +661,7 @@ function buildLabModal() {
   var ratioHeader = '<div class="lab-ratio-row" style="padding:6px 0;border-bottom:2px solid var(--bdr)">' +
     '<div class="lab-r-name" style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Ratio</div>' +
     '<div class="lab-r-mean" style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Ideal</div>' +
-    '<div class="lab-r-val" style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Oscar</div>' +
+    '<div class="lab-r-val" style="font-size:10px;color:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">' + PET.name.toUpperCase() + '</div>' +
   '</div>';
 
   // Toxic metals
@@ -760,7 +760,7 @@ function buildHero() {
   var card = '<div class="hero-card">' +
     '<div class="hero-card-label">TOP INSIGHT</div>' +
     '<div class="hero-card-title">' + PET.name + ' is in ' + topNoun + ' stress.</div>' +
-    '<div class="hero-card-desc">His ' + topR.label.toLowerCase() + ' ratio is ' + topMult + '\u00d7 above optimal, affecting energy, weight, and coat. The good news: diet and supplements can help.</div>' +
+    '<div class="hero-card-desc">' + (PET.sex === 'Female' ? 'Her ' : 'His ') + topR.label.toLowerCase() + ' ratio is ' + topMult + '\u00d7 above optimal, affecting energy, weight, and coat. The good news: diet and supplements can help.</div>' +
     '<button class="hero-card-cta" data-scroll="systems-section">View recommendations \u2192</button>' +
   '</div>';
 
@@ -879,7 +879,7 @@ function buildFindings() {
         '<div class="hs-gradient-dot" style="left:' + pos + '%"></div>' +
       '</div>' +
       '<div class="hs-gradient-labels"><span>Optimal</span><span>Watch</span><span>Concern</span><span>Priority</span></div>' +
-      '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+      '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">' + PET.name + ': ' + r.val + '</span></div>' +
     '</div>';
     if (r.systems) {
       innerHtml += '<div class="fc-tags">' + r.systems.map(function(sys) {
@@ -930,7 +930,7 @@ function buildGoodNews() {
         '<div class="hs-gradient-dot" style="left:' + pos + '%"></div>' +
       '</div>' +
       '<div class="hs-gradient-labels"><span>Optimal</span><span>Watch</span><span>Concern</span><span>Priority</span></div>' +
-      '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+      '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">' + PET.name + ': ' + r.val + '</span></div>' +
     '</div>';
     if (r.desc) {
       innerHtml += '<div style="font-size:13px;color:var(--t2);line-height:1.65">' + r.desc + '</div>';
@@ -1066,7 +1066,7 @@ function buildToxin() {
 
   return '<div class="tox" data-toggle="tox">' +
     '<div class="tox-top"><div class="tox-title" style="display:flex;align-items:center;gap:8px"><span style="width:18px;height:18px;flex-shrink:0">' + SVG_ICONS.warning + '</span>Aluminum Elevated</div><div class="tox-badge">87\u00d7 above ref</div></div>' +
-    '<div class="tox-sum">Oscar\u2019s aluminum level is significantly elevated. All 6 other metals tested are below reference limits.</div>' +
+    '<div class="tox-sum">' + PET.name + '\u2019s aluminum level is significantly elevated. All 6 other metals tested are below reference limits.</div>' +
     '<div class="tox-hint">Tap for details \u25BE</div>' +
     '<div class="tox-expand"><div class="tox-inner">' + bars +
     '</div></div></div>';
@@ -1106,26 +1106,26 @@ function buildPlan() {
       items + '</div>';
   }).join('');
 
-  return '<div class="plan" id="plan-section"><div class="plan-title">Oscar\u2019s Plan</div>' +
+  return '<div class="plan" id="plan-section"><div class="plan-title">' + PET.name + '\u2019s Plan</div>' +
     '<div class="plan-desc">Everything in one place \u2014 diet, supplements, and lifestyle changes organized by when to start. Check off items as you go.</div>' +
     phasesHtml + '</div>';
 }
 
 function buildBundle() {
-  return '<div class="bundle"><h3>' + SVG_ICONS.package + ' Oscar\u2019s Complete Bundle</h3>' +
+  return '<div class="bundle"><h3>' + SVG_ICONS.package + '' + PET.name + '\u2019s Complete Bundle</h3>' +
     '<p class="bundle-sub">All 6 supplements selected for his mineral profile \u2014 in one package.</p>' +
     '<div class="bundle-row"><span class="bundle-price">$99</span><span class="bundle-orig">$149</span><span class="bundle-save">Save 33%</span></div>' +
-    '<button class="bundle-btn">Get Oscar\u2019s Bundle</button></div>';
+    '<button class="bundle-btn">Get ' + PET.name + '\u2019s Bundle</button></div>';
 }
 
 function buildNextSteps() {
-  return '<div class="ns"><div class="ns-icon" style="font-size:20px;display:flex;align-items:center;justify-content:center">' + SVG_ICONS.stethoscope + '</div><div class="ns-info"><h4>Share with your vet</h4><p>Send Oscar\u2019s full report for professional review</p></div><button class="ns-btn">Share</button></div>' +
+  return '<div class="ns"><div class="ns-icon" style="font-size:20px;display:flex;align-items:center;justify-content:center">' + SVG_ICONS.stethoscope + '</div><div class="ns-info"><h4>Share with your vet</h4><p>Send ' + PET.name + '\u2019s full report for professional review</p></div><button class="ns-btn">Share</button></div>' +
     '<div class="ns"><div class="ns-icon" style="font-size:20px;display:flex;align-items:center;justify-content:center">' + SVG_ICONS.refresh + '</div><div class="ns-info"><h4>Retest in 4 months</h4><p>Track progress and measure improvement</p></div><button class="ns-btn primary">Order Retest \u2014 $99</button></div>';
 }
 
 function buildRetest() {
   return '<div class="retest">' +
-    '<h3>Track Oscar\u2019s Progress</h3>' +
+    '<h3>Track ' + PET.name + '\u2019s Progress</h3>' +
     '<p>Retest in 4 months to measure improvement from diet and supplement changes.</p>' +
     '<div class="timeline">' +
       '<div class="tl-step"><div class="tl-dot"></div><div class="tl-label">Today</div></div>' +
@@ -1253,12 +1253,12 @@ function updatePhaseProgress() {
     }
   });
 }
-// INIT — load from platform API if ?id= present, else render demo
+// INIT â load from platform API if ?id= present, else render demo
 (function(){
   var params = new URLSearchParams(window.location.search);
   var id = params.get('id')
       var kit = params.get('kit');
-  if (!id && !kit) { render(); return; }
+  if (!id && !kit) { render(); document.title = PET.name + "'s Health Report \u2014 CheckPup"; return; }
   document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif;color:#5C5C57"><div style="text-align:center"><div style="font-size:28px;margin-bottom:12px">Loading your report...</div><div style="color:#9C9C96">Fetching assessment data</div></div></div>';
       var apiUrl = kit ? 'https://checkpup-platform.vercel.app/api/lab-report?kit=' + encodeURIComponent(kit) : 'https://checkpup-platform.vercel.app/api/assessment?id=' + encodeURIComponent(id);
           fetch(apiUrl)
