@@ -1253,14 +1253,15 @@ function updatePhaseProgress() {
     }
   });
 }
-
 // INIT — load from platform API if ?id= present, else render demo
 (function(){
   var params = new URLSearchParams(window.location.search);
-  var id = params.get('id');
-  if (!id) { render(); return; }
+  var id = params.get('id')
+      var kit = params.get('kit');
+  if (!id && !kit) { render(); return; }
   document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif;color:#5C5C57"><div style="text-align:center"><div style="font-size:28px;margin-bottom:12px">Loading your report...</div><div style="color:#9C9C96">Fetching assessment data</div></div></div>';
-  fetch('https://checkpup-platform.vercel.app/api/assessment?id=' + encodeURIComponent(id))
+      var apiUrl = kit ? 'https://checkpup-platform.vercel.app/api/lab-report?kit=' + encodeURIComponent(kit) : 'https://checkpup-platform.vercel.app/api/assessment?id=' + encodeURIComponent(id);
+          fetch(apiUrl)
     .then(function(r){ return r.json(); })
     .then(function(d){
       if (d.error) { document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif"><div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">Report not found</div><div style="color:#9C9C96">' + d.error + '</div></div></div>'; return; }
