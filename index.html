@@ -1254,8 +1254,26 @@ function updatePhaseProgress() {
   });
 }
 
-// INIT
-render();
+// INIT — load from platform API if ?id= present, else render demo
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var id = params.get('id');
+  if (!id) { render(); return; }
+  document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif;color:#5C5C57"><div style="text-align:center"><div style="font-size:28px;margin-bottom:12px">Loading your report...</div><div style="color:#9C9C96">Fetching assessment data</div></div></div>';
+  fetch('https://checkpup-platform.vercel.app/api/assessment?id=' + encodeURIComponent(id))
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      if (d.error) { document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:SF,system-ui,sans-serif"><div style="text-align:center"><div style="font-size:24px;margin-bottom:8px">Report not found</div><div style="color:#9C9C96">' + d.error + '</div></div></div>'; return; }
+      if (d.pet) { PET = d.pet; }
+      if (d.ratios) { RATIOS = d.ratios; }
+      if (d.systems) { SYSTEMS = d.systems; }
+      if (d.toxics) { TOXICS = d.toxics; }
+      if (d.minerals) { MINERALS = d.minerals; }
+      if (d.phases) { PHASES = d.phases; }
+      render();
+    })
+    .catch(function(e){ console.error('CheckPup load error:', e); render(); });
+})();
 </script>
 </body>
 </html>
