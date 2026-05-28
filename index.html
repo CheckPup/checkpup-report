@@ -302,7 +302,41 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .ftr-links{margin-top:10px;display:flex;justify-content:center;gap:16px;font-size:11.5px}
 .ftr-links a{color:var(--t3);text-decoration:none}
 .ftr-disc{font-size:10.5px;color:var(--t3);margin-top:12px;line-height:1.6;max-width:300px;margin-left:auto;margin-right:auto}
+/* ── PDF / Print Overrides ─────────────────────────── */
+@media print {
+  body{max-width:none!important;margin:0!important}
+  .hdr{display:none!important}
+  .fc-expand,.sys-tile-detail,.tox-expand,.sys-deep{max-height:none!important;opacity:1!important;overflow:visible!important}
+  .fc-chev,.sys-tile-chev,.hero-pri-chev,.hero-healthy-chev,.tox-hint,.sys-more{display:none!important}
+  .bundle,.retest,.ns,.lab-modal-overlay{display:none!important}
+  .hero-card-cta{display:none!important}
+}
+.pdf-mode body,.pdf-mode{max-width:none!important}
+.pdf-mode .hdr{display:none!important}
+.pdf-mode .fc-expand,.pdf-mode .sys-tile-detail,.pdf-mode .tox-expand,.pdf-mode .sys-deep{max-height:none!important;opacity:1!important;overflow:visible!important;transition:none!important}
+.pdf-mode .fc-chev,.pdf-mode .sys-tile-chev,.pdf-mode .hero-pri-chev,.pdf-mode .hero-healthy-chev,.pdf-mode .tox-hint,.pdf-mode .sys-more,.pdf-mode .sys-more-chev{display:none!important}
+.pdf-mode .bundle,.pdf-mode .retest,.pdf-mode .ns{display:none!important}
+.pdf-mode .hero-card-cta{display:none!important}
+.pdf-mode .lab-modal-overlay{display:none!important}
+.pdf-lab-inline{display:none}
+.pdf-mode .pdf-lab-inline{display:block!important}
+.pdf-mode .pdf-lab-inline .lab-modal-body{padding:0 4px}
+.pdf-mode .pdf-lab-inline .lab-sec-title{margin-top:12px}
+.pdf-mode .hero-banner{border-radius:0!important}
+.pdf-vet-hdr{display:none;padding:20px 24px;background:#1B4332;color:#fff;text-align:center;border-radius:0}
+.pdf-mode .pdf-vet-hdr{display:block!important}
+.pdf-vet-hdr h2{font-size:18px;font-weight:800;margin:0 0 4px;letter-spacing:-.3px}
+.pdf-vet-hdr p{font-size:11px;opacity:.7;margin:0}
+.pdf-footer-note{display:none;padding:16px 24px;text-align:center;font-size:10px;color:var(--t3);border-top:1px solid var(--bdr-l)}
+.pdf-mode .pdf-footer-note{display:block!important}
+.pdf-overlay{display:none;position:fixed;inset:0;background:rgba(27,67,50,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:inherit;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.pdf-overlay.active{display:flex}
+.pdf-overlay-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:pdfspin .8s linear infinite;margin-bottom:16px}
+@keyframes pdfspin{to{transform:rotate(360deg)}}
+.pdf-overlay-text{font-size:16px;font-weight:700;letter-spacing:-.2px}
+.pdf-overlay-sub{font-size:12px;opacity:.6;margin-top:4px}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.2/html2pdf.bundle.min.js" defer></script>
 </head>
 <body>
 <script>
@@ -680,7 +714,7 @@ function buildLabModal() {
 
 function buildHeader() {
   var logoUrl = 'https://checkpup.com/cdn/shop/files/Asset_1_300x_c1e1b68c-32d8-4691-918c-48b3f7fca461_384x96.png?v=1634664606';
-  return '<div class="hdr"><div class="logo-txt"><img class="logo-img" src="' + logoUrl + '" alt="CheckPup"></div><div class="hdr-btns"><button class="hdr-btn" data-action="open-lab">Lab Values</button><button class="hdr-btn">Share Report</button></div></div>';
+  return '<div class="hdr"><div class="logo-txt"><img class="logo-img" src="' + logoUrl + '" alt="CheckPup"></div><div class="hdr-btns"><button class="hdr-btn" data-action="open-lab">Lab Values</button><button class="hdr-btn" data-action="download-pdf">' + SVG_ICONS.stethoscope + ' Share with Vet</button></div></div>';
 }
 
 function buildHero() {
@@ -1138,20 +1172,163 @@ function buildFooter() {
     '<div class="ftr-disc">For informational purposes only. Does not replace veterinary advice. Consult your vet before making changes to diet or supplements.</div></div>';
 }
 
+function buildPdfVetHeader() {
+  return '<div class="pdf-vet-hdr">' +
+    '<h2>CheckPup Health Report — ' + PET.name + '</h2>' +
+    '<p>' + PET.breed + ' ' + String.fromCharCode(183) + ' ' + PET.sex + ' ' + String.fromCharCode(183) + ' ' + PET.age + ' ' + String.fromCharCode(183) + ' Kit #' + PET.kitId + ' ' + String.fromCharCode(183) + ' ' + PET.testDate + '</p>' +
+  '</div>';
+}
+
+function buildPdfLabInline() {
+  // Reuse the lab modal content but render it inline for PDF
+  var RATIO_KEYS = ["CaK","CaMg","CaP","NaK","NaMg","ZnCu","FeCu"];
+  var ratioRows = RATIO_KEYS.map(function(k) {
+    var r = RATIOS[k], s = getSev(k);
+    return '<tr><td style="padding:4px 8px;font-size:12px;font-weight:600">' + r.ratio + '</td>' +
+      '<td style="padding:4px 8px;font-size:12px;text-align:center;color:var(--t3)">' + r.mean + '</td>' +
+      '<td style="padding:4px 8px;font-size:12px;text-align:center;font-weight:700">' + r.val + '</td>' +
+      '<td style="padding:4px 8px;font-size:11px;font-weight:600;color:' + s.c + '">' + (r.val > r.mean ? (r.val/r.mean).toFixed(1)+'x above' : (r.mean/r.val).toFixed(1)+'x below') + '</td></tr>';
+  }).join('');
+
+  var mineralRows = MINERALS.map(function(m) {
+    var diff = Math.abs(m.val - m.ideal) / m.ideal;
+    var status = diff < 0.3 ? 'Normal' : diff < 0.7 ? 'Watch' : 'Flag';
+    var statusColor = diff < 0.3 ? 'var(--ok)' : diff < 0.7 ? 'var(--caut)' : 'var(--crit)';
+    return '<tr><td style="padding:3px 8px;font-size:12px;font-weight:600">' + m.key + '</td>' +
+      '<td style="padding:3px 8px;font-size:11px;color:var(--t2)">' + m.name + '</td>' +
+      '<td style="padding:3px 8px;font-size:12px;text-align:center">' + m.val + '</td>' +
+      '<td style="padding:3px 8px;font-size:12px;text-align:center;color:var(--t3)">' + m.ideal + '</td>' +
+      '<td style="padding:3px 8px;font-size:11px;font-weight:600;color:' + statusColor + '">' + status + '</td></tr>';
+  }).join('');
+
+  var toxicRows = TOXICS.map(function(t) {
+    var over = t.val > t.max;
+    return '<tr><td style="padding:3px 8px;font-size:12px;font-weight:600">' + t.key + '</td>' +
+      '<td style="padding:3px 8px;font-size:11px;color:var(--t2)">' + t.label + '</td>' +
+      '<td style="padding:3px 8px;font-size:12px;text-align:center;font-weight:700;color:' + (over?'var(--crit)':'var(--t1)') + '">' + t.val + '</td>' +
+      '<td style="padding:3px 8px;font-size:12px;text-align:center;color:var(--t3)">' + String.fromCharCode(8804) + t.max + '</td>' +
+      '<td style="padding:3px 8px;font-size:11px;font-weight:600;color:' + (over?'var(--crit)':'var(--ok)') + '">' + (over ? (t.val/t.max).toFixed(0)+'x over limit' : 'Within range') + '</td></tr>';
+  }).join('');
+
+  var tableStyle = 'width:100%;border-collapse:collapse;background:var(--sf);border:1px solid var(--bdr-l);border-radius:8px;overflow:hidden';
+  var thStyle = 'padding:6px 8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);text-align:left;border-bottom:2px solid var(--bdr)';
+
+  return '<div class="pdf-lab-inline sec">' +
+    '<div class="sec-hdr"><span class="sec-lbl">Lab Values</span></div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div style="font-size:13px;font-weight:700;margin-bottom:8px">Mineral Ratios</div>' +
+      '<table style="' + tableStyle + '"><thead><tr>' +
+        '<th style="' + thStyle + '">Ratio</th><th style="' + thStyle + ';text-align:center">Canine Ideal</th><th style="' + thStyle + ';text-align:center">' + PET.name + '</th><th style="' + thStyle + '">Status</th>' +
+      '</tr></thead><tbody>' + ratioRows + '</tbody></table>' +
+    '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div style="font-size:13px;font-weight:700;margin-bottom:8px">Nutrient Minerals (ppm)</div>' +
+      '<table style="' + tableStyle + '"><thead><tr>' +
+        '<th style="' + thStyle + '">Key</th><th style="' + thStyle + '">Mineral</th><th style="' + thStyle + ';text-align:center">Value</th><th style="' + thStyle + ';text-align:center">Ideal</th><th style="' + thStyle + '">Status</th>' +
+      '</tr></thead><tbody>' + mineralRows + '</tbody></table>' +
+    '</div>' +
+    '<div style="margin-bottom:16px">' +
+      '<div style="font-size:13px;font-weight:700;margin-bottom:8px">Toxic Metals</div>' +
+      '<table style="' + tableStyle + '"><thead><tr>' +
+        '<th style="' + thStyle + '">Key</th><th style="' + thStyle + '">Metal</th><th style="' + thStyle + ';text-align:center">Value</th><th style="' + thStyle + ';text-align:center">Limit</th><th style="' + thStyle + '">Status</th>' +
+      '</tr></thead><tbody>' + toxicRows + '</tbody></table>' +
+    '</div>' +
+  '</div>';
+}
+
+function buildPdfFooterNote() {
+  return '<div class="pdf-footer-note">This report was generated by CheckPup (checkpup.com) using Dr. Ava Frick\'s Clinical Animal Nutrition (CAN) Survey methodology. ' +
+    'Based on hair tissue mineral analysis (HTMA). For informational purposes only — does not replace veterinary diagnosis. ' +
+    'Report generated ' + new Date().toLocaleDateString('en-US', {year:'numeric',month:'long',day:'numeric'}) + '.</div>';
+}
+
+function buildPdfOverlay() {
+  return '<div class="pdf-overlay" id="pdf-overlay">' +
+    '<div class="pdf-overlay-spinner"></div>' +
+    '<div class="pdf-overlay-text">Generating PDF…</div>' +
+    '<div class="pdf-overlay-sub">This may take a few seconds</div>' +
+  '</div>';
+}
+
+function generatePDF() {
+  var overlay = document.getElementById('pdf-overlay');
+  if (overlay) overlay.classList.add('active');
+
+  // Expand all sections
+  document.querySelectorAll('.fc').forEach(function(el) { el.classList.add('open'); });
+  document.querySelectorAll('.sys-tile').forEach(function(el) { el.classList.add('open'); el.classList.add('deep'); });
+  document.querySelectorAll('.tox').forEach(function(el) { el.classList.add('open'); });
+  document.querySelectorAll('.tox-row-wrap').forEach(function(el) { el.classList.add('open'); });
+
+  // Enter PDF mode
+  document.documentElement.classList.add('pdf-mode');
+  document.body.style.maxWidth = 'none';
+
+  var fileName = PET.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-checkpup-report.pdf';
+
+  setTimeout(function() {
+    var element = document.body;
+    var opt = {
+      margin: [8, 8, 12, 8],
+      filename: fileName,
+      image: { type: 'jpeg', quality: 0.95 },
+      html2canvas: {
+        scale: 2,
+        useCORS: true,
+        letterRendering: true,
+        scrollY: 0,
+        windowWidth: 480
+      },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    html2pdf().set(opt).from(element).save().then(function() {
+      // Restore original state
+      document.documentElement.classList.remove('pdf-mode');
+      document.body.style.maxWidth = '420px';
+      document.querySelectorAll('.fc').forEach(function(el) { el.classList.remove('open'); });
+      document.querySelectorAll('.sys-tile').forEach(function(el) { el.classList.remove('open'); el.classList.remove('deep'); });
+      document.querySelectorAll('.tox').forEach(function(el) { el.classList.remove('open'); });
+      document.querySelectorAll('.tox-row-wrap').forEach(function(el) { el.classList.remove('open'); });
+      if (overlay) overlay.classList.remove('active');
+    }).catch(function(err) {
+      console.error('PDF generation failed:', err);
+      document.documentElement.classList.remove('pdf-mode');
+      document.body.style.maxWidth = '420px';
+      if (overlay) overlay.classList.remove('active');
+      alert('PDF generation failed. Please try again.');
+    });
+  }, 100);
+}
+
 function render() {
-  document.body.innerHTML = buildHeader() + buildHero() +
+  document.body.innerHTML = buildPdfVetHeader() + buildHeader() + buildHero() +
     '<div class="sec" id="what-we-found">' + buildSecHdr("What we found") + buildFindings() + buildGoodNews() + '</div>' +
     '<div class="sec" id="systems-section">' + buildSecHdr("Body Systems") + buildSystems() + '</div>' +
     '<div class="sec" id="toxin-section">' + buildSecHdr("Toxic Metals") + buildToxin() + '</div>' +
     '<div class="sec">' + buildSecHdr("Oscar\'s Plan") + buildPlan() + buildBundle() + '</div>' +
     '<div class="sec">' + buildSecHdr("Track Progress") + buildRetest() + buildNextSteps() + '</div>' +
+    buildPdfLabInline() +
     buildFooter() +
-    buildLabModal();
+    buildPdfFooterNote() +
+    buildLabModal() +
+    buildPdfOverlay();
   bindEvents();
 }
 
 function bindEvents() {
   document.addEventListener('click', function(e) {
+    var pdfBtn = e.target.closest('[data-action="download-pdf"]');
+    if (pdfBtn) {
+      if (typeof html2pdf === 'undefined') {
+        alert('PDF library is still loading. Please wait a moment and try again.');
+        return;
+      }
+      generatePDF();
+      return;
+    }
+
     var labOpen = e.target.closest('[data-action="open-lab"]');
     if (labOpen) {
       var modal = document.getElementById('lab-modal');
