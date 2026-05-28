@@ -736,7 +736,8 @@ function buildLabModal() {
   var toxRows = TOXICS.map(function(t) {
     var pct = Math.min((t.val / (t.max * 3)) * 100, 100);
     var over = t.val > t.max;
-    var barColor = over ? 'var(--crit)' : 'var(--ok)';
+    var ratio = t.val / t.max;
+    var barColor = over ? 'var(--crit)' : ratio > 0.6 ? 'var(--warn)' : 'var(--caut)';
     var valColor = over ? 'var(--crit)' : 'var(--t1)';
     return '<div class="lab-tox-row">' +
       '<div class="lab-t-name">' + t.key + '</div>' +
@@ -907,7 +908,7 @@ function buildHero() {
       '<div class="hero-grid-icon" style="color:var(--warn)">' + SVG_ICONS.warning + '</div>' +
       '<div class="hero-grid-label">Toxic Metals</div>' +
       '<div class="hero-grid-val" style="color:var(--crit)">' + elevatedToxins + ' elevated</div>' +
-      '<div class="hero-grid-bar"><div class="hero-grid-bar-fill" style="width:' + Math.round(elevatedToxins / TOXICS.length * 100) + '%;background:var(--crit)"></div></div>' +
+      '<div class="hero-grid-bar"><div class="hero-grid-bar-fill" style="width:100%;background:var(--caut)"></div></div>' +
       '<div class="hero-grid-link">View details</div>' +
     '</div>' +
   '</div>';
@@ -1322,11 +1323,23 @@ function buildPdfLabInline() {
 
   var toxicRows = TOXICS.map(function(t) {
     var over = t.val > t.max;
+    var ratio = t.val / t.max;
+    var statusText, statusColor;
+    if (over) {
+      statusText = ratio.toFixed(0) + 'x over limit';
+      statusColor = 'var(--crit)';
+    } else if (ratio > 0.6) {
+      statusText = 'Moderate';
+      statusColor = 'var(--warn)';
+    } else {
+      statusText = 'Low';
+      statusColor = 'var(--caut)';
+    }
     return '<tr><td style="padding:3px 8px;font-size:12px;font-weight:600">' + t.key + '</td>' +
       '<td style="padding:3px 8px;font-size:11px;color:var(--t2)">' + t.label + '</td>' +
       '<td style="padding:3px 8px;font-size:12px;text-align:center;font-weight:700;color:' + (over?'var(--crit)':'var(--t1)') + '">' + t.val + '</td>' +
       '<td style="padding:3px 8px;font-size:12px;text-align:center;color:var(--t3)">' + String.fromCharCode(8804) + t.max + '</td>' +
-      '<td style="padding:3px 8px;font-size:11px;font-weight:600;color:' + (over?'var(--crit)':'var(--ok)') + '">' + (over ? (t.val/t.max).toFixed(0)+'x over limit' : 'Within range') + '</td></tr>';
+      '<td style="padding:3px 8px;font-size:11px;font-weight:600;color:' + statusColor + '">' + statusText + '</td></tr>';
   }).join('');
 
   var tableStyle = 'width:100%;border-collapse:collapse;background:var(--sf);border:1px solid var(--bdr-l);border-radius:8px;overflow:hidden';
