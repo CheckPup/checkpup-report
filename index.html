@@ -337,6 +337,7 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .pdf-mode .bundle,.pdf-mode .retest,.pdf-mode .ns{display:none!important}
 .pdf-mode .hero-card-cta{display:none!important}
 .pdf-mode .lab-modal-overlay{display:none!important}
+.pdf-mode .pdf-overlay{display:none!important}
 .pdf-lab-inline{display:none}
 .pdf-mode .pdf-lab-inline{display:block!important}
 .pdf-mode .pdf-lab-inline .lab-modal-body{padding:0 24px}
@@ -1361,7 +1362,7 @@ function buildPdfFooterNote() {
 }
 
 function buildPdfOverlay() {
-  return '<div class="pdf-overlay" id="pdf-overlay">' +
+  return '<div class="pdf-overlay" id="pdf-overlay" data-html2canvas-ignore="true">' +
     '<div class="pdf-overlay-spinner"></div>' +
     '<div class="pdf-overlay-text">Generating PDF…</div>' +
     '<div class="pdf-overlay-sub">This may take a few seconds</div>' +
