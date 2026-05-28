@@ -1251,53 +1251,6 @@ function buildToxin() {
     '</div></div></div>';
 }
 
-function buildClinicalSigns() {
-  // Collect signs from flagged systems, grouped by observable category
-  var signMap = {};
-  SYSTEMS.forEach(function(sys) {
-    if (sys.progressValue === 'Unlikely') return;
-    var sv = getSystemSev(sys);
-    if (sys.signs) {
-      sys.signs.forEach(function(sign) {
-        if (!signMap[sign]) {
-          signMap[sign] = {text: sign, systems: [], severity: sv};
-        }
-        signMap[sign].systems.push(sys.name);
-        // Keep the highest severity
-        var sevOrder = {Critical:0,Likely:1,Possible:2,Monitor:3,Slight:4,Healthy:5};
-        if ((sevOrder[sv.l] || 5) < (sevOrder[signMap[sign].severity.l] || 5)) {
-          signMap[sign].severity = sv;
-        }
-      });
-    }
-  });
-
-  var allSigns = Object.keys(signMap).map(function(k) { return signMap[k]; });
-  // Sort by severity (most severe first)
-  var sevOrder = {Critical:0,Likely:1,Possible:2,Monitor:3,Slight:4,Healthy:5};
-  allSigns.sort(function(a, b) { return (sevOrder[a.severity.l] || 5) - (sevOrder[b.severity.l] || 5); });
-
-  if (allSigns.length === 0) return '';
-
-  var rows = allSigns.map(function(s) {
-    var systemTags = s.systems.map(function(sys) {
-      return '<span style="display:inline-block;font-size:9px;font-weight:600;padding:2px 7px;border-radius:100px;background:' + s.severity.bg + ';color:' + s.severity.c + ';margin-right:3px">' + sys + '</span>';
-    }).join('');
-    return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--bdr-l)">' +
-      '<div style="width:8px;height:8px;border-radius:50%;background:' + s.severity.c + ';flex-shrink:0;margin-top:5px"></div>' +
-      '<div style="flex:1">' +
-        '<div style="font-size:13px;font-weight:600;color:var(--t1);margin-bottom:4px">' + s.text + '</div>' +
-        '<div style="display:flex;flex-wrap:wrap;gap:3px">' + systemTags + '</div>' +
-      '</div>' +
-    '</div>';
-  }).join('');
-
-  return '<div style="background:var(--sf);border-radius:var(--r);padding:18px 20px;border:1px solid var(--bdr-l);box-shadow:var(--s1)">' +
-    '<div style="font-size:13px;color:var(--t2);line-height:1.6;margin-bottom:16px">These are observable signs linked to Oscar\'s mineral imbalances. Track any you notice and share with your vet.</div>' +
-    '<div>' + rows + '</div>' +
-  '</div>';
-}
-
 function buildPlan() {
   var phasesHtml = PHASES.map(function(phase, pi) {
     var items = phase.items.map(function(item) {
@@ -1547,7 +1500,6 @@ function render() {
     '<div class="sec" id="what-we-found">' + buildSecHdr("What we found") + buildFindings() + buildGoodNews() + '</div>' +
     '<div class="sec" id="systems-section">' + buildSecHdr("Body Systems") + buildSystems() + '</div>' +
     '<div class="sec" id="toxin-section">' + buildSecHdr("Toxic Metals") + buildToxin() + '</div>' +
-    '<div class="sec" id="clinical-signs">' + buildSecHdr("Clinical Signs") + buildClinicalSigns() + '</div>' +
     '<div class="sec">' + buildSecHdr("Oscar\'s Plan") + buildPlan() + '</div>' +
     buildPdfLabInline() +
     buildFooter() +
