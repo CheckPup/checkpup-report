@@ -328,7 +328,8 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
   .hero-card-cta{display:none!important}
   .view-toggle{display:none!important}
 }
-.pdf-mode body,.pdf-mode{max-width:none!important}
+/* PDF mode — full-width A4 layout */
+.pdf-mode,.pdf-mode body{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;background:#fff!important}
 .pdf-mode .hdr{display:none!important}
 .pdf-mode .fc-expand,.pdf-mode .sys-tile-detail,.pdf-mode .tox-expand,.pdf-mode .sys-deep{max-height:none!important;opacity:1!important;overflow:visible!important;transition:none!important}
 .pdf-mode .fc-chev,.pdf-mode .sys-tile-chev,.pdf-mode .hero-pri-chev,.pdf-mode .hero-healthy-chev,.pdf-mode .tox-hint,.pdf-mode .sys-more,.pdf-mode .sys-more-chev{display:none!important}
@@ -337,10 +338,29 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .pdf-mode .lab-modal-overlay{display:none!important}
 .pdf-lab-inline{display:none}
 .pdf-mode .pdf-lab-inline{display:block!important}
-.pdf-mode .pdf-lab-inline .lab-modal-body{padding:0 4px}
+.pdf-mode .pdf-lab-inline .lab-modal-body{padding:0 16px}
 .pdf-mode .pdf-lab-inline .lab-sec-title{margin-top:12px}
 .pdf-mode .hero-banner{border-radius:0!important}
 .pdf-mode .view-toggle{display:none!important}
+/* PDF layout improvements */
+.pdf-mode .sec{padding:0 24px!important;page-break-inside:auto}
+.pdf-mode .fc{page-break-inside:avoid;margin-bottom:10px}
+.pdf-mode .sys-tile{page-break-inside:avoid;margin-bottom:8px}
+.pdf-mode .tox{page-break-inside:avoid}
+.pdf-mode .hero-grid{gap:12px!important}
+.pdf-mode .hero-grid-box{min-height:auto!important;padding:14px!important}
+.pdf-mode .hero-body{padding:16px 24px 20px!important}
+.pdf-mode .hero-banner{padding:8px 24px 0!important}
+.pdf-mode .hero-id{margin-bottom:12px!important}
+.pdf-mode .hero-priorities{gap:6px!important}
+.pdf-mode .hero-pri{padding:12px 14px 12px 0!important}
+.pdf-mode .sec-hdr{margin:24px 0 14px!important}
+.pdf-mode .fc-compact{padding:14px 16px 14px 18px!important}
+.pdf-mode .fc-inner{padding:0 18px 16px!important}
+.pdf-mode .sys-grid{gap:4px!important}
+.pdf-mode .ph-card{page-break-inside:avoid}
+.pdf-mode .lab-m-grid{flex-wrap:wrap!important}
+/* Vet header and footer */
 .pdf-vet-hdr{display:none;padding:20px 24px;background:#1B4332;color:#fff;text-align:center;border-radius:0}
 .pdf-mode .pdf-vet-hdr{display:block!important}
 .pdf-vet-hdr h2{font-size:18px;font-weight:800;margin:0 0 4px;letter-spacing:-.3px}
@@ -1302,21 +1322,25 @@ function generatePDF() {
   // Enter PDF mode
   document.documentElement.classList.add('pdf-mode');
   document.body.style.maxWidth = 'none';
+  document.body.style.width = '100%';
+  document.body.style.margin = '0';
+  document.body.style.padding = '0';
+  document.body.style.background = '#fff';
 
   var fileName = PET.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-checkpup-report.pdf';
 
   setTimeout(function() {
     var element = document.body;
     var opt = {
-      margin: [8, 8, 12, 8],
+      margin: [10, 10, 14, 10],
       filename: fileName,
-      image: { type: 'jpeg', quality: 0.95 },
+      image: { type: 'jpeg', quality: 0.98 },
       html2canvas: {
         scale: 2,
         useCORS: true,
         letterRendering: true,
         scrollY: 0,
-        windowWidth: 480
+        windowWidth: 794
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
@@ -1326,6 +1350,10 @@ function generatePDF() {
       // Restore original state
       document.documentElement.classList.remove('pdf-mode');
       document.body.style.maxWidth = '420px';
+      document.body.style.width = '';
+      document.body.style.margin = '0 auto';
+      document.body.style.padding = '';
+      document.body.style.background = '';
       if (!wasDetailed) {
         document.body.classList.remove('detailed-mode');
         document.querySelectorAll('.fc').forEach(function(el) { el.classList.remove('open'); });
@@ -1338,11 +1366,13 @@ function generatePDF() {
       console.error('PDF generation failed:', err);
       document.documentElement.classList.remove('pdf-mode');
       document.body.style.maxWidth = '420px';
+      document.body.style.width = '';
+      document.body.style.margin = '0 auto';
       if (!wasDetailed) document.body.classList.remove('detailed-mode');
       if (overlay) overlay.classList.remove('active');
       alert('PDF generation failed. Please try again.');
     });
-  }, 100);
+  }, 300);
 }
 
 function render() {
