@@ -329,7 +329,8 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
   .view-toggle{display:none!important}
 }
 /* PDF mode — full-width A4 layout */
-.pdf-mode,.pdf-mode body{max-width:none!important;width:100%!important;margin:0!important;padding:0!important;background:#fff!important}
+.pdf-mode,.pdf-mode body{max-width:none!important;width:794px!important;margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important}
+.pdf-mode *{box-sizing:border-box!important}
 .pdf-mode .hdr{display:none!important}
 .pdf-mode .fc-expand,.pdf-mode .sys-tile-detail,.pdf-mode .tox-expand,.pdf-mode .sys-deep{max-height:none!important;opacity:1!important;overflow:visible!important;transition:none!important}
 .pdf-mode .fc-chev,.pdf-mode .sys-tile-chev,.pdf-mode .hero-pri-chev,.pdf-mode .hero-healthy-chev,.pdf-mode .tox-hint,.pdf-mode .sys-more,.pdf-mode .sys-more-chev{display:none!important}
@@ -338,28 +339,35 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .pdf-mode .lab-modal-overlay{display:none!important}
 .pdf-lab-inline{display:none}
 .pdf-mode .pdf-lab-inline{display:block!important}
-.pdf-mode .pdf-lab-inline .lab-modal-body{padding:0 16px}
+.pdf-mode .pdf-lab-inline .lab-modal-body{padding:0 24px}
 .pdf-mode .pdf-lab-inline .lab-sec-title{margin-top:12px}
-.pdf-mode .hero-banner{border-radius:0!important}
+.pdf-mode .hero-banner{border-radius:0!important;width:100%!important}
 .pdf-mode .view-toggle{display:none!important}
-/* PDF layout improvements */
-.pdf-mode .sec{padding:0 24px!important;page-break-inside:auto}
-.pdf-mode .fc{page-break-inside:avoid;margin-bottom:10px}
-.pdf-mode .sys-tile{page-break-inside:avoid;margin-bottom:8px}
-.pdf-mode .tox{page-break-inside:avoid}
-.pdf-mode .hero-grid{gap:12px!important}
-.pdf-mode .hero-grid-box{min-height:auto!important;padding:14px!important}
-.pdf-mode .hero-body{padding:16px 24px 20px!important}
-.pdf-mode .hero-banner{padding:8px 24px 0!important}
+/* PDF layout — force all containers to full width */
+.pdf-mode .sec{padding:0 32px!important;page-break-inside:auto;width:100%!important;max-width:none!important}
+.pdf-mode .fc{page-break-inside:avoid;margin-bottom:10px;width:100%!important}
+.pdf-mode .sys-tile{page-break-inside:avoid;margin-bottom:8px;width:100%!important}
+.pdf-mode .tox{page-break-inside:avoid;width:100%!important}
+.pdf-mode .hero-grid{gap:12px!important;width:100%!important}
+.pdf-mode .hero-grid-box{min-height:auto!important;padding:14px!important;flex:1!important}
+.pdf-mode .hero-body{padding:16px 32px 20px!important;width:100%!important}
+.pdf-mode .hero-banner{padding:8px 32px 0!important;width:100%!important}
 .pdf-mode .hero-id{margin-bottom:12px!important}
-.pdf-mode .hero-priorities{gap:6px!important}
-.pdf-mode .hero-pri{padding:12px 14px 12px 0!important}
+.pdf-mode .hero-priorities{gap:6px!important;width:100%!important}
+.pdf-mode .hero-pri{padding:12px 14px 12px 0!important;width:100%!important}
 .pdf-mode .sec-hdr{margin:24px 0 14px!important}
 .pdf-mode .fc-compact{padding:14px 16px 14px 18px!important}
-.pdf-mode .fc-inner{padding:0 18px 16px!important}
-.pdf-mode .sys-grid{gap:4px!important}
+.pdf-mode .fc-inner{padding:0 18px 16px!important;width:100%!important}
+.pdf-mode .sys-grid{gap:4px!important;width:100%!important}
 .pdf-mode .ph-card{page-break-inside:avoid}
 .pdf-mode .lab-m-grid{flex-wrap:wrap!important}
+.pdf-mode .fc-expand{width:100%!important}
+.pdf-mode .hero-info{max-width:none!important}
+.pdf-mode .hero-banner-inner{max-width:none!important;width:100%!important}
+.pdf-mode .hs-gradient{width:100%!important}
+.pdf-mode .fc-tags{flex-wrap:wrap!important}
+.pdf-mode .pdf-vet-hdr{width:100%!important}
+.pdf-mode .pdf-footer-note{width:100%!important}
 /* Vet header and footer */
 .pdf-vet-hdr{display:none;padding:20px 24px;background:#1B4332;color:#fff;text-align:center;border-radius:0}
 .pdf-mode .pdf-vet-hdr{display:block!important}
@@ -367,6 +375,8 @@ body{font-family:'SF',system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,
 .pdf-vet-hdr p{font-size:11px;opacity:.7;margin:0}
 .pdf-footer-note{display:none;padding:16px 24px;text-align:center;font-size:10px;color:var(--t3);border-top:1px solid var(--bdr-l)}
 .pdf-mode .pdf-footer-note{display:block!important}
+.pdf-mode .lab-modal{max-width:none!important;width:100%!important}
+.pdf-mode .ftr-disc{max-width:none!important}
 .pdf-overlay{display:none;position:fixed;inset:0;background:rgba(27,67,50,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:inherit;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .pdf-overlay.active{display:flex}
 .pdf-overlay-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:pdfspin .8s linear infinite;margin-bottom:16px}
@@ -400,7 +410,7 @@ var SVG_ICONS = {
   alertCircle: '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="8"/><line x1="10" y1="7" x2="10" y2="11"/><circle cx="10" cy="14" r="0.5" fill="currentColor"/></svg>'
 };
 
-var PET = {name:"Oscar",breed:"Mixed Breed",sex:"Male (Neutered)",age:"11 yrs",testDate:"January 2025",kitId:"CHK-7742",oxType:"Mixed Oxidizer"};
+var PET = {name:"Oscar",breed:"Mixed Breed",sex:"Male",age:"11 yrs",testDate:"January 2025",kitId:"CHK-7742",oxType:"Mixed Oxidizer"};
 
 var WELLNESS_ORDER = {VeryLow:1,VeryHigh:1,ModerateHigh:2,ModerateLow:2,Low:3,High:3,Optimal:4};
 
@@ -666,6 +676,7 @@ function getPos(k) {
 
 var KEYS = ["CaK","NaK","NaMg","CaMg","CaP","ZnCu","FeCu"];
 var PRI = KEYS.filter(function(k) { var s = getSev(k); return s.lv === "red" || s.lv === "org"; });
+var WATCH = KEYS.filter(function(k) { return getSev(k).lv === "ylw"; });
 var THR = KEYS.filter(function(k) { return getSev(k).lv === "grn"; });
 var checkedItems = {};
 
@@ -875,7 +886,7 @@ function buildHero() {
         '<div class="hero-grid-ring-txt">' + healthyCount + '<span class="hero-grid-ring-of">OF ' + total + '</span></div>' +
       '</div>' +
       '<div class="hero-grid-label">Wellness Check</div>' +
-      '<div class="hero-grid-val">' + PRI.length + ' need attention</div>' +
+      '<div class="hero-grid-val">' + PRI.length + ' need attention' + (WATCH.length > 0 ? ' ' + String.fromCharCode(183) + ' ' + WATCH.length + ' to watch' : '') + '</div>' +
       '<div class="hero-grid-bar"><div class="hero-grid-bar-fill" style="width:' + Math.round(ringPct * 100) + '%;background:var(--ok)"></div></div>' +
       '<div class="hero-grid-link">View details</div>' +
     '</div>' +
@@ -977,7 +988,60 @@ function buildFindings() {
     '</div>';
   }).join('');
 
-  return allFourLowBanner + cards;
+  // Build "Watch" cards for yellow-severity items (not bad enough for Priority, not green)
+  var watchCards = '';
+  if (WATCH.length > 0) {
+    watchCards = '<div style="margin-top:24px"><div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:0 4px">' +
+      '<div style="width:8px;height:8px;border-radius:50%;background:var(--caut)"></div>' +
+      '<span style="font-size:13px;font-weight:700;color:var(--t1)">Keep an eye on</span>' +
+      '<span style="font-size:11px;color:var(--t3)">' + WATCH.length + ' area' + (WATCH.length > 1 ? 's' : '') + '</span>' +
+    '</div>' +
+    WATCH.map(function(k) {
+      var r = RATIOS[k], s = getSev(k), pos = getPos(k);
+      var deviation = r.val / r.mean;
+      var sevLabel = 'Watch ' + String.fromCharCode(183) + ' ' + deviation.toFixed(1) + 'x ' + (r.val > r.mean ? 'above' : 'below') + ' optimal';
+
+      var innerHtml = '';
+      if (r.plain) {
+        innerHtml += '<div class="fc-plain">' + r.plain + '</div>';
+      }
+      if (r.reported) {
+        innerHtml += '<div class="fc-reported"><strong>What you told us: </strong>' + r.reported.join(", ") + '</div>';
+      }
+      innerHtml += '<div style="margin-bottom:16px">' +
+        '<div class="hs-gradient">' +
+          '<div class="hs-gradient-bar"></div>' +
+          '<div class="hs-gradient-dot" style="left:' + pos + '%"></div>' +
+        '</div>' +
+        '<div class="hs-gradient-labels"><span>Optimal</span><span>Watch</span><span>Concern</span><span>Priority</span></div>' +
+        '<div class="hs-vals"><span class="hs-val-ideal">Ideal: ' + r.mean + '</span><span class="hs-val-actual" style="color:' + s.c + '">Oscar: ' + r.val + '</span></div>' +
+      '</div>';
+      if (r.systems) {
+        innerHtml += '<div class="fc-tags">' + r.systems.map(function(sys) {
+          return '<span class="fc-tag" style="background:' + s.bg + ';color:' + s.c + '">' + sys + '</span>';
+        }).join('') + '</div>';
+      }
+      if (r.actions) {
+        innerHtml += '<div class="fc-wtd"><div class="fc-wtd-hdr">What to do</div><ul>' +
+          r.actions.map(function(a) { return '<li>' + a + '</li>'; }).join('') + '</ul></div>';
+      }
+
+      return '<div class="fc" data-toggle="fc" id="finding-' + k + '">' +
+        '<div class="fc-accent" style="background:' + s.c + '"></div>' +
+        '<div class="fc-compact">' +
+          '<div class="fc-num" style="background:' + s.bg + ';color:' + s.c + '">' + SVG_ICONS.alertCircle + '</div>' +
+          '<div class="fc-body">' +
+            '<div class="fc-title">' + r.label + '</div>' +
+            '<div class="fc-sub" style="color:var(--caut)">' + sevLabel + '</div>' +
+          '</div>' +
+          '<div class="fc-chev">' + SVG_ICONS.chevronDown + '</div>' +
+        '</div>' +
+        '<div class="fc-expand"><div class="fc-inner">' + innerHtml + '</div></div>' +
+      '</div>';
+    }).join('') + '</div>';
+  }
+
+  return allFourLowBanner + cards + watchCards;
 }
 
 
@@ -1322,25 +1386,34 @@ function generatePDF() {
   // Enter PDF mode
   document.documentElement.classList.add('pdf-mode');
   document.body.style.maxWidth = 'none';
-  document.body.style.width = '100%';
+  document.body.style.width = '794px';
   document.body.style.margin = '0';
   document.body.style.padding = '0';
   document.body.style.background = '#fff';
+  document.body.style.overflow = 'visible';
+  // Force reflow so html2canvas sees the updated layout
+  document.body.offsetHeight;
 
   var fileName = PET.name.toLowerCase().replace(/[^a-z0-9]/g, '-') + '-checkpup-report.pdf';
 
   setTimeout(function() {
+    // Scroll to top to avoid offset issues
+    window.scrollTo(0, 0);
     var element = document.body;
     var opt = {
-      margin: [10, 10, 14, 10],
+      margin: [8, 0, 10, 0],
       filename: fileName,
-      image: { type: 'jpeg', quality: 0.98 },
+      image: { type: 'jpeg', quality: 0.95 },
       html2canvas: {
         scale: 2,
         useCORS: true,
         letterRendering: true,
         scrollY: 0,
-        windowWidth: 794
+        scrollX: 0,
+        windowWidth: 794,
+        width: 794,
+        x: 0,
+        y: 0
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
       pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
@@ -1354,6 +1427,7 @@ function generatePDF() {
       document.body.style.margin = '0 auto';
       document.body.style.padding = '';
       document.body.style.background = '';
+      document.body.style.overflow = '';
       if (!wasDetailed) {
         document.body.classList.remove('detailed-mode');
         document.querySelectorAll('.fc').forEach(function(el) { el.classList.remove('open'); });
@@ -1368,6 +1442,7 @@ function generatePDF() {
       document.body.style.maxWidth = '420px';
       document.body.style.width = '';
       document.body.style.margin = '0 auto';
+      document.body.style.overflow = '';
       if (!wasDetailed) document.body.classList.remove('detailed-mode');
       if (overlay) overlay.classList.remove('active');
       alert('PDF generation failed. Please try again.');
